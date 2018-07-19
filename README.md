@@ -9,9 +9,8 @@ A new flutter plugin project.
 Add those two lines to your `AndroidManifest.xml`
 
 ```xml
-    <uses-permission android:name="android.permission.NFC" />
-
-    <uses-feature
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
 ```
