@@ -77,11 +77,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Expanded(child: new Center(
+        home: new Scaffold(
+      appBar: new AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Expanded(
+        child: new Center(
           child: Column(
             children: <Widget>[
               new Text('Running on: $_platformVersion\n'),
@@ -103,6 +104,6 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
-    );
+    ));
   }
 }
