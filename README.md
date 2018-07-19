@@ -4,6 +4,18 @@ A new flutter plugin project.
 
 ## How to use
 
+### Android setup
+
+Add those two lines to your `AndroidManifest.xml`
+
+```xml
+    <uses-permission android:name="android.permission.NFC" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+```
+
 ### Start NFC
 ```dart
  Future<Null> startNFC() async {
