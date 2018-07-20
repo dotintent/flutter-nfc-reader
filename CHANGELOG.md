@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Flutter required min version is now 0.5.5 as latest stable.
+
 ## 0.0.2
 
 * Name refactoring for functions, more descriptive and synteic.
