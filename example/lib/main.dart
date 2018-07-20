@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
   Future<Null> startNFC() async {
     String response;
     try {
-      final String result = await FlutterNfcReader.startNFC;
+      final String result = await FlutterNfcReader.read;
       if (result != null) {
         response = '';
       } else {
@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
   Future<Null> stopNFC() async {
     bool response;
     try {
-      final bool result = await FlutterNfcReader.stopNFC;
+      final bool result = await FlutterNfcReader.stop;
       response = result;
     } on PlatformException {
       response = false;
@@ -77,31 +77,35 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        home: new Scaffold(
-      appBar: new AppBar(
-        title: const Text('Plugin example app'),
-      ),
-      body: new Center(
-        child: Column(
-          children: <Widget>[
-            new Text('Running on: $_platformVersion\n'),
-            new Text('NFC Status: $_nfcActive\n'),
-            new Text('NFC Data: $_nfcData\n'),
-            new FlatButton(
-              child: Text('Start NFC'),
-              onPressed: () {
-                startNFC();
-              },
+      home: new Scaffold(
+          appBar: new AppBar(
+            title: const Text('Plugin example app'),
+          ),
+          body: new SafeArea(
+            top: true,
+            bottom: true,
+            child: new Center(
+              child: Column(
+                children: <Widget>[
+                  new Text('Running on: $_platformVersion\n'),
+                  new Text('NFC Status: $_nfcActive\n'),
+                  new Text('NFC Data: $_nfcData\n'),
+                  new FlatButton(
+                    child: Text('Start NFC'),
+                    onPressed: () {
+                      startNFC();
+                    },
+                  ),
+                  new FlatButton(
+                    child: Text('Stop NFC'),
+                    onPressed: () {
+                      stopNFC();
+                    },
+                  ),
+                ],
+              ),
             ),
-            new FlatButton(
-              child: Text('Stop NFC'),
-              onPressed: () {
-                stopNFC();
-              },
-            ),
-          ],
-        ),
-      ),
-    ));
+          )),
+    );
   }
 }

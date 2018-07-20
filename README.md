@@ -15,12 +15,16 @@ Add those two lines to your `AndroidManifest.xml`
         android:required="true" />
 ```
 
-### Start NFC
+### Read NFC
+
+This function will return a promise when a read occurs, till that very moment the reading session is open.
+In order to stop a reading session you need to use `stop` function.
+
 ```dart
- Future<Null> startNFC() async {
+ Future<Null> NfcRead() async {
     String response;
     try {
-      final String result = await FlutterNfcReader.startNFC;
+      final String result = await FlutterNfcReader.read;
       if (result != null) {
         response = '';
       } else {
@@ -39,10 +43,10 @@ Add those two lines to your `AndroidManifest.xml`
 ### Stop NFC
 ```dart
 
-  Future<Null> stopNFC() async {
+  Future<Null> NfcStop() async {
     bool response;
     try {
-      final bool result = await FlutterNfcReader.stopNFC;
+      final bool result = await FlutterNfcReader.stop;
       response = !result;
     } on PlatformException {
       response = false;

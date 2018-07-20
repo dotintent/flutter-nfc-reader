@@ -18,10 +18,10 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         
         switch(call.method) {
-        case "startNFC":
+        case "NfcRead":
             resulter = result
             activateNFC(instruction)
-        case "stopNFC":
+        case "NfcStop":
             result(disableNFC())
         default:
             result("iOS " + UIDevice.current.systemVersion)
@@ -73,9 +73,11 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
                     text = String(format: "%@%@", text, parsedPayload.uriString)
                     let urlString = parsedPayload.uriString
                     result(urlString)
+                    disableNFC()
                 } else {
                     text = "N/A"
                     result(text)
+                    disableNFC()
                 }
             }
         }

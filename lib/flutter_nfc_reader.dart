@@ -11,16 +11,16 @@ class FlutterNfcReader {
     return version;
   }
 
-  static Future<String> get startNFC async {
+  static Future<String> get read async {
     String result;
-    await _channel.invokeMethod('startNFC').then((value) {
+    await _channel.invokeMethod('NfcRead').then((value) {
       result = value;
     });
     return result;
   }
 
-  static Future<bool> get stopNFC async {
-    final bool stopped = await _channel.invokeMethod('stopNFC');
+  static Future<bool> get stop async {
+    final bool stopped = await _channel.invokeMethod('NfcStop');
     return stopped;
   }
 }
