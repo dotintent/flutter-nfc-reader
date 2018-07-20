@@ -1,8 +1,12 @@
 name: flutter_nfc_reader
 description: A nfc reader plugin for iOS and Android.
 version: 0.0.1
-author: Matteo Crippa
+author: Matteo Crippa <>
 homepage: https://github.com/matteocrippa
+
+environment:
+  sdk: '>=1.19.0 <3.0.0'
+  flutter: ^0.5.7
 
 dependencies:
   flutter:
@@ -12,6 +16,3 @@ flutter:
   plugin:
     androidPackage: com.example.flutternfcreader
     pluginClass: FlutterNfcReaderPlugin
-
-  environment:
-    sdk: ">=1.19.0 <2.0.0"
