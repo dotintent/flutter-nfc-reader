@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
     bool response;
     try {
       final bool result = await FlutterNfcReader.stopNFC;
-      response = !result;
+      response = result;
     } on PlatformException {
       response = false;
     }
@@ -81,27 +81,25 @@ class _MyAppState extends State<MyApp> {
       appBar: new AppBar(
         title: const Text('Plugin example app'),
       ),
-      body: Expanded(
-        child: new Center(
-          child: Column(
-            children: <Widget>[
-              new Text('Running on: $_platformVersion\n'),
-              new Text('NFC Status: $_nfcActive\n'),
-              new Text('NFC Data: $_nfcData\n'),
-              new FlatButton(
-                child: Text('Start NFC'),
-                onPressed: () {
-                  startNFC();
-                },
-              ),
-              new FlatButton(
-                child: Text('Stop NFC'),
-                onPressed: () {
-                  stopNFC();
-                },
-              ),
-            ],
-          ),
+      body: new Center(
+        child: Column(
+          children: <Widget>[
+            new Text('Running on: $_platformVersion\n'),
+            new Text('NFC Status: $_nfcActive\n'),
+            new Text('NFC Data: $_nfcData\n'),
+            new FlatButton(
+              child: Text('Start NFC'),
+              onPressed: () {
+                startNFC();
+              },
+            ),
+            new FlatButton(
+              child: Text('Stop NFC'),
+              onPressed: () {
+                stopNFC();
+              },
+            ),
+          ],
         ),
       ),
     ));
