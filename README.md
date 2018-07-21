@@ -18,6 +18,11 @@ Add those two lines to your `AndroidManifest.xml`
         android:required="true" />
 ```
 
+### iOS Setup
+- Enable Capabilities / Near Field Communication Tag Reading. 
+- Info.plist file, add Privacy - NFC Scan Usage Description with string value NFC Tag.
+
+
 ### Read NFC
 
 This function will return a promise when a read occurs, till that very moment the reading session is open.
