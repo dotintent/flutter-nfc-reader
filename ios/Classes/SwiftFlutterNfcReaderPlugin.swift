@@ -43,13 +43,15 @@ extension SwiftFlutterNfcReaderPlugin {
         }
         
         // start
-        nfcSession?.begin()
+        if let nfcSession = nfcSession {
+            nfcSession.begin()
+        }
     }
     
-    func disableNFC() -> Bool {
+    func disableNFC() {
         nfcSession?.invalidate()
+        result(urlString)
         resulter = nil
-        return true
     }
 
 }
