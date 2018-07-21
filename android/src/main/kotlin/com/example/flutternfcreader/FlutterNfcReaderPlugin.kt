@@ -1,4 +1,4 @@
-package com.example.flutternfcreader
+package it.matteocrippa.flutternfcreader
 
 import android.Manifest
 import android.app.Activity

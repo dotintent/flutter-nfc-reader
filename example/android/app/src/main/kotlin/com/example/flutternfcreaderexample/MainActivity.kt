@@ -1,4 +1,4 @@
-package com.example.flutternfcreaderexample
+package it.matteocrippa.flutternfcreaderexample
 
 import android.os.Bundle
 
