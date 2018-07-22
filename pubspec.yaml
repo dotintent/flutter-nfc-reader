@@ -1,6 +1,6 @@
 name: flutter_nfc_reader
 description: A nfc reader plugin for iOS and Android. This plugin allow you to trigger NFC native reading session on device.
-version: 0.0.12
+version: 0.0.14
 author: Matteo Crippa <>
 homepage: https://github.com/matteocrippa
 

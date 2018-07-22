@@ -19,6 +19,9 @@ Add those two lines to your `AndroidManifest.xml`
 ```
 
 ### iOS Setup
+
+Atm only `Swift` based Flutter project are supported.
+
 - Enable Capabilities / Near Field Communication Tag Reading. 
 - Info.plist file, add Privacy - NFC Scan Usage Description with string value NFC Tag.
 

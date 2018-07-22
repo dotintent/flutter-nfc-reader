@@ -1,4 +1,4 @@
-## 0.1.0
+## 0.0.14
 
 * Stable iOS version.
 * Fix issue with importing with Cocoapods.
