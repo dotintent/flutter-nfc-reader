@@ -17,7 +17,6 @@ A new flutter plugin project.
   s.dependency 'Flutter'
   s.dependency 'VYNFCKit'
   s.swift_version = '3.0'
-  s.ios.deployment_target = '11.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
 end
