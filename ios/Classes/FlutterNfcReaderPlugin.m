@@ -3,6 +3,10 @@
 
 @implementation FlutterNfcReaderPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftFlutterNfcReaderPlugin registerWithRegistrar:registrar];
+    if (@available(iOS 11.0, *)) {
+        [SwiftFlutterNfcReaderPlugin registerWithRegistrar:registrar];
+    } else {
+        // Fallback on earlier versions
+    }
 }
 @end

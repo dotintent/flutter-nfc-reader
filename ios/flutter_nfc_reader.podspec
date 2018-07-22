@@ -17,7 +17,6 @@ A new flutter plugin project.
   s.dependency 'Flutter'
   s.frameworks = 'CoreNFC'
   s.swift_version = '3.0'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   s.ios.deployment_target = '8.0'
 
 end
