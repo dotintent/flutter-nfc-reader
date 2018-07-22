@@ -1,6 +1,6 @@
 import Flutter
 import UIKit
-import VYNFCKit
+import CoreNFC
 
 @available(iOS 11.0, *)
 public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
@@ -63,26 +63,12 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
     public func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
         
         for message in messages {
-            for payload in message.records {
-                guard let parsedPayload = VYNFCNDEFPayloadParser.parse(payload) else {
-                    continue
-                }
-                var text = ""
-                guard let result = resulter else { return  }
-                
-                if let parsedPayload = parsedPayload as? VYNFCNDEFURIPayload {
-                    text = "[URI payload]\n"
-                    text = String(format: "%@%@", text, parsedPayload.uriString)
-                    let urlString = parsedPayload.uriString
-                    result(urlString)
-                    disableNFC()
-                } else {
-                    text = "N/A"
-                    result(text)
-                    disableNFC()
-                }
+            for record in message.records {
+                resulter?(record.payload)
+                disableNFC()
             }
         }
+        
     }
     
     public func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
