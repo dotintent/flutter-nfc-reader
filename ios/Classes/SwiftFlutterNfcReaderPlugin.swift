@@ -50,7 +50,7 @@ extension SwiftFlutterNfcReaderPlugin {
     
     func disableNFC() {
         nfcSession?.invalidate()
-        result(urlString)
+        resulter?(false)
         resulter = nil
     }
 
