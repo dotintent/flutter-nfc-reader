@@ -1,3 +1,12 @@
+## 0.1.0
+
+* Stable iOS version.
+* Fix issue with importing with Cocoapods.
+
+## 0.0.5
+
+* iOS fix support for static modules.
+
 ## 0.0.4
 
 * iOS add extra details on readme for usage.
