@@ -1,5 +1,5 @@
 import Flutter
-import UIKit
+import Foundation
 import CoreNFC
 
 @available(iOS 11.0, *)
