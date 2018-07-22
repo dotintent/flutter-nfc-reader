@@ -16,7 +16,6 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        
         switch(call.method) {
         case "NfcRead":
             resulter = result
@@ -26,7 +25,6 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
         default:
             result("iOS " + UIDevice.current.systemVersion)
         }
-        
     }
 }
 
