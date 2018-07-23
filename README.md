@@ -29,23 +29,30 @@ Atm only `Swift` based Flutter project are supported.
 ### Read NFC
 
 This function will return a promise when a read occurs, till that very moment the reading session is open.
+The promise will return a map with `<String, dynamic>`.
+The map will have inside `error` or `data` key.
 In order to stop a reading session you need to use `stop` function.
 
 ```dart
- Future<Null> NfcRead() async {
+Future<void> startNFC() async {
     String response;
+    bool state = false;
+
     try {
-      final String result = await FlutterNfcReader.read();
-      if (result != null) {
-        response = '';
+      final Map<String, dynamic> result = await FlutterNfcReader.read;
+
+      if (result["error"]) {
+        state = false;
       } else {
-        response = result;
+        state = true;
+        response = result["data"];
       }
     } on PlatformException {
       response = '';
+      state = false;
     }
     setState(() {
-      _nfcActive = true;
+      _nfcActive = state;
       _nfcData = response;
     });
   }

@@ -10,10 +10,8 @@ class FlutterNfcReader {
     return version;
   }
 
-  Future<String> read({instruction: String}) async {
-    final String result =
-        await _channel.invokeMethod('NfcRead', {instruction: instruction});
-    return result;
+  static Future<Map<String, dynamic>> get read async {
+    return await _channel.invokeMethod('NfcRead');
   }
 
   static Future<bool> get stop async {

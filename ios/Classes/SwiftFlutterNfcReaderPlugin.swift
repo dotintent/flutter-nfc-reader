@@ -46,6 +46,8 @@ extension SwiftFlutterNfcReaderPlugin {
         if let nfcSession = nfcSession {
             nfcSession.begin()
         }
+        
+        resulter?([ "error": true ])
     }
     
     func disableNFC(_ trigger: Bool = true) {
@@ -66,7 +68,7 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
         
         for message in messages {
             for record in message.records {
-                resulter?(record.payload)
+                resulter?([ "data": record.payload ])
                 disableNFC(false)
             }
         }
