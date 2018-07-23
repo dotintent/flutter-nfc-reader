@@ -13,7 +13,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Activity) : MethodCallHandler, PluginRegistry.ActivityResultListener, PluginRegistry.NewIntentListener {
+class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener {
 
 
     private var resulter: Result? = null
