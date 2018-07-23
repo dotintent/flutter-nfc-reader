@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 
 class FlutterNfcReader {
@@ -11,8 +10,9 @@ class FlutterNfcReader {
     return version;
   }
 
-  static Future<String> get read async {
-    final String result = await _channel.invokeMethod('NfcRead');
+  Future<String> read({instruction: String}) async {
+    final String result =
+        await _channel.invokeMethod('NfcRead', {instruction: instruction});
     return result;
   }
 

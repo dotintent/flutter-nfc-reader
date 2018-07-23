@@ -35,7 +35,7 @@ In order to stop a reading session you need to use `stop` function.
  Future<Null> NfcRead() async {
     String response;
     try {
-      final String result = await FlutterNfcReader.read;
+      final String result = await FlutterNfcReader.read();
       if (result != null) {
         response = '';
       } else {
@@ -69,6 +69,11 @@ In order to stop a reading session you need to use `stop` function.
 ```
 
 For better details look at the demo app.
+
+## Extra
+
+`FlutterNfcReader.read()` has an optional parameter, only for **iOS**, called `instruction`.
+You can pass a _String_ that contains information to be shown in the modal screen.
 
 ## Getting Started
 
