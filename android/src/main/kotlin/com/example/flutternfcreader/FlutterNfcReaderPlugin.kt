@@ -15,7 +15,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener {
 
     private var resulter: Result? = null
-    private var isActive = false
+    private var isReading = false
     private var nfcAdapter: NfcAdapter? = null
     private var pendingIntent: PendingIntent? = null
 
@@ -34,9 +34,9 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
                 result.success("Android ${android.os.Build.VERSION.RELEASE}")
             }
             "NfcRead" -> {
-                isActive = initializeNFC()
+                isReading = initializeNFC()
 
-                if (isActive) {
+                if (isReading) {
                     resulter = result
                 } else {
                     result.error("Flutter", "NFC Hardware not found", "")
@@ -45,7 +45,7 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
             }
             "NfcStop" -> {
                 stopNFC()
-                result.success(isActive)
+                result.success(isReading)
             }
             else -> {
                 result.notImplemented()
@@ -62,7 +62,7 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
 
     private fun stopNFC() {
         resulter = null
-        isActive = false
+        isReading = false
         nfcAdapter?.disableForegroundDispatch(activity)
     }
 
