@@ -2,7 +2,6 @@ package it.matteocrippa.flutternfcreader
 
 import android.app.Activity
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
@@ -13,8 +12,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener {
-
+class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener {
 
     private var resulter: Result? = null
     private var isActive = false
@@ -25,7 +23,7 @@ class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Act
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
             val channel = MethodChannel(registrar.messenger(), "flutter_nfc_reader")
-            channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar.context(), registrar.activity()))
+            channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar.activity()))
         }
     }
 
@@ -36,7 +34,6 @@ class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Act
                 result.success("Android ${android.os.Build.VERSION.RELEASE}")
             }
             "NfcRead" -> {
-
                 isActive = initializeNFC()
 
                 if (isActive) {
@@ -57,19 +54,10 @@ class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Act
     }
 
     private fun initializeNFC(): Boolean {
-
         nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
-        if (nfcAdapter == null) {
-            return false
-        }
-
-        if (!nfcAdapter!!.isEnabled) {
-            return false
-        }
-
-        pendingIntent = PendingIntent.getActivity(ctx, 0, Intent(activity, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
-
-        return true
+        pendingIntent = PendingIntent.getActivity(activity, 0,
+                Intent(activity, activity.javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
+        return nfcAdapter != null
     }
 
     private fun stopNFC() {
@@ -82,27 +70,26 @@ class FlutterNfcReaderPlugin(private val ctx: Context, private val activity: Act
 
         p0?.let { intent ->
             when (intent.action) {
-                NfcAdapter.ACTION_NDEF_DISCOVERED -> {
+                NfcAdapter.ACTION_NDEF_DISCOVERED, NfcAdapter.ACTION_TECH_DISCOVERED -> {
                     val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
                     rawMessages?.map { it as NdefMessage }?.forEach {
-
-                        // Log.d("nfc", it.toString())
-
                         resulter?.success(it)
-                        stopNFC()
-
-                        return true
                     }
-
+                    stopNFC()
                 }
                 else -> {
-                    return false
+                    stopNFC()
                 }
             }
 
         }
 
-        return false
+        return true
     }
+
+    /*private fun (record: NdefRecord): String {
+        val payload = record.payload
+        return String(payload)
+    }*/
 
 }

@@ -51,15 +51,17 @@ class _MyAppState extends State<MyApp> {
       final String result = await FlutterNfcReader.read;
       if (result == null) {
         response = '';
+        state = true;
       } else {
         response = result;
+        state = true;
       }
     } on PlatformException {
       response = '';
       state = false;
     }
     setState(() {
-      _nfcActive = true;
+      _nfcActive = state;
       _nfcData = response;
     });
   }
