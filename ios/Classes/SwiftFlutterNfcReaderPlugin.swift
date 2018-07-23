@@ -23,7 +23,7 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
             resulter = result
             activateNFC(instruction)
         case "NfcStop":
-            result(disableNFC())
+            disableNFC()
         default:
             result("iOS " + UIDevice.current.systemVersion)
         }
@@ -46,15 +46,11 @@ extension SwiftFlutterNfcReaderPlugin {
         if let nfcSession = nfcSession {
             nfcSession.begin()
         }
-        
-        resulter?([ "error": true ])
     }
     
-    func disableNFC(_ trigger: Bool = true) {
+    func disableNFC() {
         nfcSession?.invalidate()
-        if(trigger) {
-            resulter?(false)
-        }
+        resulter?(true)
         resulter = nil
     }
 
@@ -68,8 +64,8 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
         
         for message in messages {
             for record in message.records {
-                resulter?([ "data": record.payload ])
-                disableNFC(false)
+                resulter?(record.payload)
+                disableNFC()
             }
         }
         

@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   String _nfcData = '';
-  bool _nfcActive = false;
+  bool _nfcReading = false;
 
   @override
   void initState() {
@@ -41,23 +41,16 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> startNFC() async {
     String response;
-    bool state = false;
+    bool reading = true;
 
     try {
-      final Map<String, dynamic> result = await FlutterNfcReader.read;
-
-      if (result["error"]) {
-        state = false;
-      } else {
-        state = true;
-        response = result["data"];
-      }
+      response = await FlutterNfcReader.read;
     } on PlatformException {
       response = '';
-      state = false;
+      reading = false;
     }
     setState(() {
-      _nfcActive = state;
+      _nfcReading = reading;
       _nfcData = response;
     });
   }
@@ -71,7 +64,7 @@ class _MyAppState extends State<MyApp> {
       response = false;
     }
     setState(() {
-      _nfcActive = response;
+      _nfcReading = response;
     });
   }
 
@@ -89,7 +82,7 @@ class _MyAppState extends State<MyApp> {
               child: Column(
                 children: <Widget>[
                   new Text('Running on: $_platformVersion\n'),
-                  new Text('NFC Status: $_nfcActive\n'),
+                  new Text('NFC is Reading: $_nfcReading\n'),
                   new Text('NFC Data: $_nfcData\n'),
                   new FlatButton(
                     child: Text('Start NFC'),
