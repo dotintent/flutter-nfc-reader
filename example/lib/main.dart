@@ -79,18 +79,30 @@ class _MyAppState extends State<MyApp> {
             top: true,
             bottom: true,
             child: new Center(
-              child: Column(
+              child: ListView(
                 children: <Widget>[
-                  new Text('Running on: $_platformVersion\n'),
-                  new Text('NFC is Reading: $_nfcReading\n'),
-                  new Text('NFC Data: $_nfcData\n'),
-                  new FlatButton(
+                  new SizedBox(
+                    height: 10.0,
+                  ),
+                  new Text(
+                    'Running on: $_platformVersion\n',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    'NFC is Reading: $_nfcReading\n',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    'NFC Data: $_nfcData\n',
+                    textAlign: TextAlign.center,
+                  ),
+                  new RaisedButton(
                     child: Text('Start NFC'),
                     onPressed: () {
                       startNFC();
                     },
                   ),
-                  new FlatButton(
+                  new RaisedButton(
                     child: Text('Stop NFC'),
                     onPressed: () {
                       stopNFC();
