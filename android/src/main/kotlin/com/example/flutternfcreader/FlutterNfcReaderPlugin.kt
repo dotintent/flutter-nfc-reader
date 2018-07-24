@@ -70,7 +70,7 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
 
         p0?.let { intent ->
             when (intent.action) {
-                NfcAdapter.ACTION_NDEF_DISCOVERED, NfcAdapter.ACTION_TECH_DISCOVERED -> {
+                NfcAdapter.ACTION_NDEF_DISCOVERED -> {
                     val rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
                     rawMessages?.map { it as NdefMessage }?.forEach {
                         resulter?.success(it)
