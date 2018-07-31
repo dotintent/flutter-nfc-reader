@@ -45,6 +45,7 @@ class _MyAppState extends State<MyApp> {
 
     try {
       response = await FlutterNfcReader.read;
+      reading = false;
     } on PlatformException {
       response = '';
       reading = false;

@@ -9,7 +9,7 @@ You can also trigger the stop event manually using a dedicated function.
 
 ### Android setup
 
-Add those two lines to your `AndroidManifest.xml`
+Add those two lines to your `AndroidManifest.xml` on the top
 
 ```xml
 <uses-permission android:name="android.permission.NFC" />
@@ -17,6 +17,18 @@ Add those two lines to your `AndroidManifest.xml`
         android:name="android.hardware.nfc"
         android:required="true" />
 ```
+
+and add this in your _.MainActivity_ just below the other **intent-filter**:
+
+```xml
+<intent-filter>
+  <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+  <category android:name="android.intent.category.DEFAULT"/>
+  <data android:mimeType="text/plain" />
+</intent-filter>
+```
+
+**Attention** the _mimeType_ should be the right one for the [expected type](https://developer.android.com/guide/topics/connectivity/nfc/nfc) of NFC you are going to read.
 
 ### iOS Setup
 
