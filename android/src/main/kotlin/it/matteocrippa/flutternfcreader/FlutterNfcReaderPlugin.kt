@@ -1,6 +1,7 @@
 package it.matteocrippa.flutternfcreader
 
 import android.app.Activity
+import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -9,6 +10,7 @@ import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.tech.Ndef
 import android.nfc.tech.NdefFormatable
+import android.os.Bundle
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -17,14 +19,15 @@ import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 
-class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener {
+class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener, Application.ActivityLifecycleCallbacks {
 
     private var isReading = false
     private var stopOnFirstDiscovered = true
 
     private var resulter: Result? = null
 
-    private val nfcAdapter: NfcAdapter? by lazy { NfcAdapter.getDefaultAdapter(activity) }
+    private var nfcAdapter: NfcAdapter? = null
+
     private val pendingIntent by lazy {
         PendingIntent.getActivity(activity, 0,
             Intent(activity, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
@@ -69,6 +72,31 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
                 result.notImplemented()
             }
         }
+    }
+
+    override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
+    }
+
+    override fun onActivityDestroyed(p0: Activity?) {
+        stopNFC()
+    }
+
+    override fun onActivityPaused(p0: Activity?) {
+        stopNFC()
+    }
+
+    override fun onActivityResumed(p0: Activity?) {
+    }
+
+    override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
+    }
+
+    override fun onActivityStarted(p0: Activity?) {
+
+    }
+
+    override fun onActivityStopped(p0: Activity?) {
     }
 
     private fun startNFC(): Boolean {
