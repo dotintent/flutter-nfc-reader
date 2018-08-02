@@ -1,7 +1,6 @@
 package it.matteocrippa.flutternfcreader
 
 import android.app.Activity
-import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,7 +9,6 @@ import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.tech.Ndef
 import android.nfc.tech.NdefFormatable
-import android.os.Bundle
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -19,14 +17,12 @@ import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 
-class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler, PluginRegistry.NewIntentListener, Application.ActivityLifecycleCallbacks {
+class FlutterNfcReaderPlugin(private val activity: Activity, private val nfc: NfcAdapter) : MethodCallHandler, PluginRegistry.NewIntentListener {
 
     private var isReading = false
-    private var stopOnFirstDiscovered = true
+    private var stopOnFirstDiscovered = false
 
     private var resulter: Result? = null
-
-    private var nfcAdapter: NfcAdapter? = null
 
     private val pendingIntent by lazy {
         PendingIntent.getActivity(activity, 0,
@@ -44,7 +40,11 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
             val channel = MethodChannel(registrar.messenger(), "flutter_nfc_reader")
-            channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar.activity()))
+            val nfcAdapter: NfcAdapter? = NfcAdapter.getDefaultAdapter(registrar.context())
+            // this should avoid simulator crash, on simulator NFC is not supported
+            nfcAdapter?.let {
+                channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar.activity(), it))
+            }
         }
     }
 
@@ -74,43 +74,18 @@ class FlutterNfcReaderPlugin(private val activity: Activity) : MethodCallHandler
         }
     }
 
-    override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
-        nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
-    }
-
-    override fun onActivityDestroyed(p0: Activity?) {
-        stopNFC()
-    }
-
-    override fun onActivityPaused(p0: Activity?) {
-        stopNFC()
-    }
-
-    override fun onActivityResumed(p0: Activity?) {
-    }
-
-    override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
-    }
-
-    override fun onActivityStarted(p0: Activity?) {
-
-    }
-
-    override fun onActivityStopped(p0: Activity?) {
-    }
-
     private fun startNFC(): Boolean {
-        isReading = if (nfcAdapter == null) {
-            false
-        } else {
-            nfcAdapter?.enableForegroundDispatch(activity, pendingIntent, intentFilters, technologies)
+        isReading = if (nfc.isEnabled) {
+            nfc.enableForegroundDispatch(activity, pendingIntent, intentFilters, technologies)
             true
+        } else {
+            false
         }
         return isReading
     }
 
     private fun stopNFC() {
-        nfcAdapter?.disableForegroundDispatch(activity)
+        nfc.disableForegroundDispatch(activity)
         resulter = null
         isReading = false
     }
