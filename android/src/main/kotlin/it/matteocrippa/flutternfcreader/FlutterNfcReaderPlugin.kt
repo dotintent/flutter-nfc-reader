@@ -40,7 +40,7 @@ class FlutterNfcReaderPlugin(private val activity: Activity, private val nfc: Nf
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
             val channel = MethodChannel(registrar.messenger(), "flutter_nfc_reader")
-            val nfcAdapter: NfcAdapter? = NfcAdapter.getDefaultAdapter(registrar.activeContext())
+            val nfcAdapter: NfcAdapter? = NfcAdapter.getDefaultAdapter(registrar.activity().applicationContext)
             // this should avoid simulator crash, on simulator NFC is not supported
             nfcAdapter?.let {
                 channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar.activity(), it))
