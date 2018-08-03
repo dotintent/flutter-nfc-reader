@@ -1,51 +1,36 @@
 package it.matteocrippa.flutternfcreader
 
-import android.app.Activity
-import android.app.PendingIntent
-import android.content.Intent
-import android.content.IntentFilter
-import android.nfc.NdefMessage
-import android.nfc.NdefRecord
+import android.content.Context
 import android.nfc.NfcAdapter
-import android.nfc.tech.Ndef
-import android.nfc.tech.NdefFormatable
+import android.nfc.NfcManager
+import android.os.Build
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-
-class FlutterNfcReaderPlugin(private val activity: Activity, private val nfc: NfcAdapter) : MethodCallHandler, PluginRegistry.NewIntentListener {
-
+class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
     private var isReading = false
     private var stopOnFirstDiscovered = false
+    private var nfcAdapter: NfcAdapter? = null
+    private var nfcManager: NfcManager? = null
 
     private var resulter: Result? = null
 
-    private val pendingIntent by lazy {
-        PendingIntent.getActivity(activity, 0,
-            Intent(activity, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
-    }
-    private val intentFilters by lazy {
-        val filter = IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED)
-        arrayOf(filter)
-    }
-    private val technologies by lazy {
-        arrayOf(arrayOf(Ndef::class.java.name), arrayOf(NdefFormatable::class.java.name))
-    }
+    private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK
 
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
             val channel = MethodChannel(registrar.messenger(), "flutter_nfc_reader")
-            val nfcAdapter: NfcAdapter? = NfcAdapter.getDefaultAdapter(registrar.activity().applicationContext)
-            // this should avoid simulator crash, on simulator NFC is not supported
-            nfcAdapter?.let {
-                channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar.activity(), it))
-            }
+            channel.setMethodCallHandler(FlutterNfcReaderPlugin(registrar))
         }
+    }
+
+    init {
+        nfcManager = registrar.activity().getSystemService(Context.NFC_SERVICE) as? NfcManager
+        nfcAdapter = nfcManager?.defaultAdapter
     }
 
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
@@ -75,8 +60,14 @@ class FlutterNfcReaderPlugin(private val activity: Activity, private val nfc: Nf
     }
 
     private fun startNFC(): Boolean {
-        isReading = if (nfc.isEnabled) {
-            nfc.enableForegroundDispatch(activity, pendingIntent, intentFilters, technologies)
+        isReading = if (nfcAdapter?.isEnabled == true) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                nfcAdapter?.enableReaderMode(registrar.activity(), {
+                    resulter?.success(it.id)
+                },READER_FLAGS, null )
+            }
+
             true
         } else {
             false
@@ -85,55 +76,11 @@ class FlutterNfcReaderPlugin(private val activity: Activity, private val nfc: Nf
     }
 
     private fun stopNFC() {
-        nfc.disableForegroundDispatch(activity)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            nfcAdapter?.disableReaderMode(registrar.activity())
+        }
         resulter = null
         isReading = false
-    }
-
-    override fun onNewIntent(p0: Intent?): Boolean {
-
-        p0?.let { intent ->
-            when(intent.action) {
-                NfcAdapter.ACTION_NDEF_DISCOVERED -> {
-                    val messages = getNDEF(intent)
-                    messages.firstOrNull()?.let { message ->
-                        message.records?.let {
-                            it.forEach {
-                                it?.payload.let {
-                                    it?.let {
-                                        resulter?.success(it)
-                                        if(stopOnFirstDiscovered) {
-                                            stopNFC()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else -> {
-                    resulter?.success("No NFC Discovered")
-                }
-            }
-
-        }
-
-        return true
-    }
-
-    private fun getNDEF(intent: Intent): Array<NdefMessage> {
-
-        val rawMessage = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-        rawMessage?.let {
-            return rawMessage.map {
-                it as NdefMessage
-            }.toTypedArray()
-        }
-        // Unknown tag type
-        val empty = byteArrayOf()
-        val record = NdefRecord(NdefRecord.TNF_UNKNOWN, empty, empty, empty)
-        val msg = NdefMessage(arrayOf(record))
-        return arrayOf(msg)
     }
 
 }
