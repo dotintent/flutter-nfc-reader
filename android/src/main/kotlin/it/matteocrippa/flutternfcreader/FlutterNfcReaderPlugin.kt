@@ -64,8 +64,10 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 nfcAdapter?.enableReaderMode(registrar.activity(), {
-                    resulter?.success(it.id)
+
+                    resulter?.success(bytesToHexString(it.id))
                 },READER_FLAGS, null )
+
             }
 
             true
@@ -83,4 +85,20 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
         isReading = false
     }
 
+
+    private fun bytesToHexString(src: ByteArray?): String? {
+        val stringBuilder = StringBuilder("0x")
+        if (src == null || src.isEmpty()) {
+            return null
+        }
+
+        val buffer = CharArray(2)
+        for (i in src.indices) {
+            buffer[0] = Character.forDigit(src[i].toInt().ushr(4).and(0x0F), 16)
+            buffer[1] = Character.forDigit(src[i].toInt().and(0x0F), 16)
+            stringBuilder.append(buffer)
+        }
+
+        return stringBuilder.toString()
+    }
 }
