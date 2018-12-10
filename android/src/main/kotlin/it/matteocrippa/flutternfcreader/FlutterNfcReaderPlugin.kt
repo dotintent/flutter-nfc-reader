@@ -3,14 +3,12 @@ package it.matteocrippa.flutternfcreader
 import android.content.Context
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
-import android.nfc.tech.Ndef
 import android.os.Build
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
-import java.nio.charset.Charset
 
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
     private var isReading = false
@@ -66,15 +64,8 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 nfcAdapter?.enableReaderMode(registrar.activity(), {
-                    // resulter?.success(bytesToHexString(it.id))
-                    
-                    val ndef = Ndef.get(it)
-                    ndef.connect()
-                    val message = ndef.ndefMessage
-                    val data = message.toByteArray()
-                    val str = String(data, Charset.forName("UTF-8"))
-                    ndef.close()
-                    resulter?.success(str)
+
+                    resulter?.success(bytesToHexString(it.id))
                 },READER_FLAGS, null )
 
             }
