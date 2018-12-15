@@ -3,6 +3,7 @@ package it.matteocrippa.flutternfcreader
 import android.content.Context
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
+import android.nfc.Tag
 import android.os.Build
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -10,7 +11,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
+class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  NfcAdapter.ReaderCallback {
     private var isReading = false
     private var stopOnFirstDiscovered = false
     private var nfcAdapter: NfcAdapter? = null
@@ -63,11 +64,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
         isReading = if (nfcAdapter?.isEnabled == true) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                nfcAdapter?.enableReaderMode(registrar.activity(), {
-
-                    resulter?.success(bytesToHexString(it.id))
-                },READER_FLAGS, null )
-
+                nfcAdapter?.enableReaderMode(registrar.activity(), this, READER_FLAGS, null )
             }
 
             true
@@ -85,6 +82,10 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
         isReading = false
     }
 
+    // handle discovered NDEF Tags
+    override fun onTagDiscovered(tag: Tag?) {
+        resulter?.success(bytesToHexString(it.id))
+    }
 
     private fun bytesToHexString(src: ByteArray?): String? {
         val stringBuilder = StringBuilder("0x")
