@@ -18,7 +18,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler {
 
     private var resulter: Result? = null
 
-    private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK
+    private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A
 
     companion object {
         @JvmStatic
