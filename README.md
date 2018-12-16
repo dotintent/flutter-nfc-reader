@@ -18,18 +18,6 @@ Add those two lines to your `AndroidManifest.xml` on the top
         android:required="true" />
 ```
 
-and add this in your _.MainActivity_ just below the other **intent-filter**:
-
-```xml
-<intent-filter>
-  <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
-  <category android:name="android.intent.category.DEFAULT"/>
-  <data android:mimeType="text/plain" />
-</intent-filter>
-```
-
-**Attention** the _mimeType_ should be the right one for the [expected type](https://developer.android.com/guide/topics/connectivity/nfc/nfc) of NFC you are going to read.
-
 ### iOS Setup
 
 Atm only `Swift` based Flutter project are supported.
