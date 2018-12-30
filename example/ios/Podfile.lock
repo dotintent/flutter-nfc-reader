@@ -14,9 +14,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_nfc_reader/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_nfc_reader: d0b85b542b298ccb3aab505c0dd6a4114d175ee0
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  flutter_nfc_reader: 25eac24898472e5648081705ce9e7f35c7d128b4
 
 PODFILE CHECKSUM: 7765ea4305eaab0b3dfd384c7de11902aa3195fd
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.0.beta.2
