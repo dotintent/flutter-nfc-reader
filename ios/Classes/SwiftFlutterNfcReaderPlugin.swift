@@ -8,6 +8,10 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
     fileprivate var nfcSession: NFCNDEFReaderSession? = nil
     fileprivate var instruction: String? = nil
     fileprivate var resulter: FlutterResult? = nil
+
+    fileprivate let kId = "id"
+    fileprivate let kContent = "content"
+    fileprivate let kError = "error"
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_nfc_reader", binaryMessenger: registrar.messenger())
@@ -70,7 +74,9 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
             }
         }
 
-        resulter?(result)
+        let data = [kId: "", kContent: result, kError: ""]
+
+        resulter?(data)
         disableNFC()
     }
     

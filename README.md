@@ -5,6 +5,27 @@ A new flutter plugin to help developers looking to use internal hardware inside 
 The system activate a pooling reading session that stops automatically once a tag has been recognised.
 You can also trigger the stop event manually using a dedicated function.
 
+## Installation
+
+Add to pubspec.yaml:
+
+```yaml
+dependencies:
+  flutter_nfc_reader: ^0.0.22
+```
+
+and then run the shell
+
+```shell
+flutter packages get
+```
+
+last step import to the project:
+
+```dart
+import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
+```
+
 ## How to use
 
 ### Android setup
@@ -29,19 +50,20 @@ Atm only `Swift` based Flutter project are supported.
 ### Read NFC
 
 This function will return a promise when a read occurs, till that very moment the reading session is open.
-The promise will return a map with `<String, dynamic>`.
-The map will have inside `status` or `data` key.
-In order to stop a reading session you need to use `stop` function.
+The promise will return a `NfcData` model, this model contains:
+
+- id > id of the tag
+- content > content of the tag
+- error > if any error occurs
 
 ```dart
 Future<void> startNFC() async {
-    String response;
+    NfcData response;
     bool reading = true;
 
     try {
       response = await FlutterNfcReader.read;
     } on PlatformException {
-      response = '';
       reading = false;
     }
     setState(() {
@@ -69,11 +91,6 @@ Future<void> startNFC() async {
 ```
 
 For better details look at the demo app.
-
-## Extra
-
-`FlutterNfcReader.read()` has an optional parameter, only for **iOS**, called `instruction`.
-You can pass a _String_ that contains information to be shown in the modal screen.
 
 ## Getting Started
 

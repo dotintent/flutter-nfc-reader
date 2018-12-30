@@ -12,42 +12,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  String _nfcData = '';
+  NfcData _nfcData;
   bool _nfcReading = false;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-
-    try {
-      platformVersion = await FlutterNfcReader.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   Future<void> startNFC() async {
-    String response;
+    NfcData response;
     bool reading = true;
 
     try {
       response = await FlutterNfcReader.read;
       reading = false;
     } on PlatformException {
-      response = '';
       reading = false;
     }
     setState(() {
@@ -84,10 +64,6 @@ class _MyAppState extends State<MyApp> {
                 children: <Widget>[
                   new SizedBox(
                     height: 10.0,
-                  ),
-                  new Text(
-                    'Running on: $_platformVersion\n',
-                    textAlign: TextAlign.center,
                   ),
                   new Text(
                     'NFC is Reading: $_nfcReading\n',
