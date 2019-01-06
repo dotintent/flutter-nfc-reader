@@ -9,10 +9,11 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
     fileprivate var instruction: String? = nil
     fileprivate var resulter: FlutterResult? = nil
 
-    fileprivate let kId = "id"
-    fileprivate let kContent = "content"
-    fileprivate let kError = "error"
-    
+    fileprivate let kId = "nfcId"
+    fileprivate let kContent = "nfcContent"
+    fileprivate let kStatus = "nfcStatus"
+    fileprivate let kError = "nfcError"
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_nfc_reader", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterNfcReaderPlugin()
@@ -54,7 +55,9 @@ extension SwiftFlutterNfcReaderPlugin {
     
     func disableNFC() {
         nfcSession?.invalidate()
-        resulter?(true)
+        let data = [kId: "", kContent: "", kError: "", kStatus: "stopped"]
+
+        resulter?(data)
         resulter = nil
     }
 
@@ -74,7 +77,7 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
             }
         }
 
-        let data = [kId: "", kContent: result, kError: ""]
+        let data = [kId: "", kContent: result, kError: "", kStatus: "read"]
 
         resulter?(data)
         disableNFC()
@@ -82,5 +85,9 @@ extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
     
     public func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
         print(error.localizedDescription)
+        let data = [kId: "", kContent: "", kError: error.localizedDescription, kStatus: "error"]
+
+        resulter?(data)
+        disableNFC()
     }
 }
