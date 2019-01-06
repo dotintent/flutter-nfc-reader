@@ -13,7 +13,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_nfc_reader: ^0.0.22
+  flutter_nfc_reader: ^0.0.23
 ```
 
 and then run the shell

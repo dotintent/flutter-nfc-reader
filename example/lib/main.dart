@@ -24,11 +24,20 @@ class _MyAppState extends State<MyApp> {
     NfcData response;
     bool reading = true;
 
+    setState(() {
+      _nfcReading = reading;
+      _nfcData = response;
+    });
+
+    print('NFC: Scan started');
+
     try {
       response = await FlutterNfcReader.read;
       reading = false;
+      print('NFC: Scan readed NFC tag');
     } on PlatformException {
       reading = false;
+      print('NFC: Scan stopped exception');
     }
     setState(() {
       _nfcReading = reading;
@@ -41,8 +50,10 @@ class _MyAppState extends State<MyApp> {
     try {
       final bool result = await FlutterNfcReader.stop;
       response = result;
+      print('NFC: Stop scan by user');
     } on PlatformException {
       response = false;
+      print('NFC: Stop scan exception');
     }
     setState(() {
       _nfcReading = response;
