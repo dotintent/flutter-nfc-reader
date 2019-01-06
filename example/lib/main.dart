@@ -23,7 +23,8 @@ class _MyAppState extends State<MyApp> {
     NfcData response;
 
     setState(() {
-      _nfcData = NfcData(null, null, null, true);
+      _nfcData = NfcData();
+      _nfcData.status = NFCStatus.reading;
     });
 
     print('NFC: Scan started');
@@ -48,11 +49,13 @@ class _MyAppState extends State<MyApp> {
     } on PlatformException {
       print('NFC: Stop scan exception');
       response = NfcData(
-        null,
-        null,
-        "NFC Stop Exception",
-        false,
+        id: '',
+        content: '',
+        error: 'NFC scan stop exception',
+        statusMapper: '',
       );
+      response.status = NFCStatus.error;
+      ;
     }
 
     setState(() {
@@ -81,7 +84,7 @@ class _MyAppState extends State<MyApp> {
                     textAlign: TextAlign.center,
                   ),
                   new Text(
-                    _nfcData != null ? 'Reading: ${_nfcData.isReading}' : '',
+                    _nfcData != null ? 'Status: ${_nfcData.status}' : '',
                     textAlign: TextAlign.center,
                   ),
                   new Text(
