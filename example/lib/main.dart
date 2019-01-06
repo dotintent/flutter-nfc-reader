@@ -13,7 +13,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   NfcData _nfcData;
-  bool _nfcReading = false;
 
   @override
   void initState() {
@@ -22,41 +21,42 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> startNFC() async {
     NfcData response;
-    bool reading = true;
 
     setState(() {
-      _nfcReading = reading;
-      _nfcData = response;
+      _nfcData = NfcData(null, null, null, true);
     });
 
     print('NFC: Scan started');
 
     try {
-      response = await FlutterNfcReader.read;
-      reading = false;
       print('NFC: Scan readed NFC tag');
+      response = await FlutterNfcReader.read;
     } on PlatformException {
-      reading = false;
       print('NFC: Scan stopped exception');
     }
     setState(() {
-      _nfcReading = reading;
       _nfcData = response;
     });
   }
 
   Future<void> stopNFC() async {
-    bool response;
+    NfcData response;
+
     try {
-      final bool result = await FlutterNfcReader.stop;
-      response = result;
       print('NFC: Stop scan by user');
+      response = await FlutterNfcReader.stop;
     } on PlatformException {
-      response = false;
       print('NFC: Stop scan exception');
+      response = NfcData(
+        null,
+        null,
+        "NFC Stop Exception",
+        false,
+      );
     }
+
     setState(() {
-      _nfcReading = response;
+      _nfcData = response;
     });
   }
 
@@ -77,11 +77,23 @@ class _MyAppState extends State<MyApp> {
                     height: 10.0,
                   ),
                   new Text(
-                    'NFC is Reading: $_nfcReading\n',
+                    '- NFC Status -\n',
                     textAlign: TextAlign.center,
                   ),
                   new Text(
-                    'NFC Data: $_nfcData\n',
+                    _nfcData != null ? 'Reading: ${_nfcData.isReading}' : '',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    _nfcData != null ? 'Identifier: ${_nfcData.id}' : '',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    _nfcData != null ? 'Content: ${_nfcData.content}' : '',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    _nfcData != null ? 'Error: ${_nfcData.error}' : '',
                     textAlign: TextAlign.center,
                   ),
                   new RaisedButton(

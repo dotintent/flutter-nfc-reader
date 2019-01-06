@@ -43,8 +43,8 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
 
         when (call.method) {
             "NfcRead" -> {
-                startNFC()
                 resulter = result
+                startNFC()
 
                 if (!isReading) {
                     val data = mapOf(kId to null, kContent to null, kError to "NFC Hardware not found")
