@@ -13,7 +13,12 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.nio.charset.Charset
 
+
+
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  NfcAdapter.ReaderCallback {
+
+    private val activity = registrar.activity()
+
     private var isReading = false
     private var nfcAdapter: NfcAdapter? = null
     private var nfcManager: NfcManager? = null
@@ -36,7 +41,10 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
     }
 
     init {
-        nfcManager = registrar.activity().getSystemService(Context.NFC_SERVICE) as? NfcManager
+       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+           activity.requestPermissions(arrayOf(android.Manifest.permission.NFC), 1)
+       }
+        nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
         nfcAdapter = nfcManager?.defaultAdapter
     }
 
