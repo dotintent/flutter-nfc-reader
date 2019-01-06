@@ -68,16 +68,11 @@ extension SwiftFlutterNfcReaderPlugin {
 extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
     
     public func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
-        var result = ""
-        for message in messages {
-            for payload in message.records {
-                if let s = String(data: payload.payload.advanced(by: 3), encoding: .utf8) {
-                    result += s
-                }
-            }
-        }
+        guard let message = messages.first else { return }
+	    guard let payload = message.records.first else { return }
+	    guard let payloadContent = String(data: payload.payload, encoding: String.Encoding.utf8) else { return }
 
-        let data = [kId: "", kContent: result, kError: "", kStatus: "read"]
+        let data = [kId: "", kContent: payloadContent, kError: "", kStatus: "read"]
 
         resulter?(data)
         disableNFC()
