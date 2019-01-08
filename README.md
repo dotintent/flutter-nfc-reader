@@ -13,7 +13,10 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_nfc_reader: ^0.0.23
+  flutter_nfc_reader:
+    git:
+      url: git://github.com/matteocrippa/flutter-nfc-reader.git
+      path: feature/refactor
 ```
 
 and then run the shell
