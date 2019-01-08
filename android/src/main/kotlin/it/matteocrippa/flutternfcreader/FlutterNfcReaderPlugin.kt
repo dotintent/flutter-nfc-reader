@@ -1,5 +1,6 @@
 package it.matteocrippa.flutternfcreader
 
+import android.Manifest
 import android.content.Context
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
@@ -14,6 +15,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.nio.charset.Charset
 
 
+const val PERMISSION_NFC = 1007
 
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  NfcAdapter.ReaderCallback {
 
@@ -41,9 +43,6 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
     }
 
     init {
-       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-           activity.requestPermissions(arrayOf(android.Manifest.permission.NFC), 1)
-       }
         nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
         nfcAdapter = nfcManager?.defaultAdapter
     }
@@ -52,6 +51,14 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
 
         when (call.method) {
             "NfcRead" -> {
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    activity.requestPermissions(
+                        arrayOf(Manifest.permission.NFC),
+                        PERMISSION_NFC
+                    )
+                }
+
                 resulter = result
                 startNFC()
 
