@@ -64,15 +64,21 @@ The promise will return a `NfcData` model, this model contains:
 ```dart
 Future<void> startNFC() async {
     NfcData response;
-    bool reading = true;
+
+    setState(() {
+      _nfcData = NfcData();
+      _nfcData.status = NFCStatus.reading;
+    });
+
+    print('NFC: Scan started');
 
     try {
+      print('NFC: Scan readed NFC tag');
       response = await FlutterNfcReader.read;
     } on PlatformException {
-      reading = false;
+      print('NFC: Scan stopped exception');
     }
     setState(() {
-      _nfcReading = reading;
       _nfcData = response;
     });
   }
@@ -80,17 +86,26 @@ Future<void> startNFC() async {
 
 ### Stop NFC
 ```dart
+Future<void> stopNFC() async {
+    NfcData response;
 
-  Future<void> stopNFC() async {
-    bool response;
     try {
-      final bool result = await FlutterNfcReader.stop;
-      response = result;
+      print('NFC: Stop scan by user');
+      response = await FlutterNfcReader.stop;
     } on PlatformException {
-      response = false;
+      print('NFC: Stop scan exception');
+      response = NfcData(
+        id: '',
+        content: '',
+        error: 'NFC scan stop exception',
+        statusMapper: '',
+      );
+      response.status = NFCStatus.error;
+      ;
     }
+
     setState(() {
-      _nfcReading = response;
+      _nfcData = response;
     });
   }
 ```
