@@ -26,8 +26,8 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
     private var resulter: Result? = null
 
     private var kId = "nfcId"
-    private var kContent= "nfcContent"
-    private var kError= "nfcError"
+    private var kContent = "nfcContent"
+    private var kError = "nfcError"
     private var kStatus = "nfcStatus"
 
     private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A
@@ -56,7 +56,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
                 startNFC()
 
                 if (!isReading) {
-                    val data = mapOf(kId to null, kContent to null, kError to "NFC Hardware not found", kStatus to "error")
+                    val data = mapOf(kId to "", kContent to "", kError to "NFC Hardware not found", kStatus to "error")
                     result.success(data)
                     resulter = null
                 }
@@ -64,7 +64,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
             }
             "NfcStop" -> {
                 stopNFC()
-                val data = mapOf(kId to null, kContent to null, kError to null, kStatus to "stopped")
+                val data = mapOf(kId to "", kContent to "", kError to "", kStatus to "stopped")
                 result.success(data)
             }
             else -> {
@@ -108,8 +108,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
         val id = tag?.id
         ndef?.close()
         if (message != null) {
-            val data = mapOf(kId to id, kContent to message, kError to null, kStatus to "read")
-
+            val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
             resulter?.success(data)
         }
     }
