@@ -16,7 +16,7 @@ dependencies:
   flutter_nfc_reader:
     git:
       url: git://github.com/matteocrippa/flutter-nfc-reader.git
-      path: feature/refactor
+      ref: feature/refactor
 ```
 
 and then run the shell
