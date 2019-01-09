@@ -112,7 +112,8 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
         val message = ndef?.ndefMessage
                           ?.toByteArray()
                           ?.toString(Charset.forName("UTF-8")) ?: ""
-        val id = tag?.id?.toString(Charset.forName("ISO-8859-1")) ?: ""
+        //val id = tag?.id?.toString(Charset.forName("ISO-8859-1")) ?: ""
+        val id = bytesToHexString(tag?.id) ?: ""
         ndef?.close()
         if (message != null) {
             val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
