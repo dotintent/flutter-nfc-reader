@@ -99,7 +99,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
             nfcAdapter?.disableReaderMode(registrar.activity())
         }
         resulter = null
-        isReading = falseid?.toString
+        isReading = false
     }
 
     // handle discovered NDEF Tags
