@@ -1,6 +1,6 @@
 # Flutter NFC Reader
 
-![](https://raw.githubusercontent.com/matteocrippa/flutter-nfc-reader/feature/refactor/.github/nfc-flutter-logo.jpg)
+![](https://raw.githubusercontent.com/matteocrippa/flutter-nfc-reader/master/.github/nfc-flutter-logo.jpg)
 
 A new flutter plugin to help developers looking to use internal hardware inside iOS or Android devices for reading NFC tags.
 
