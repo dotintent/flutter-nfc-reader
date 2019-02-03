@@ -1,3 +1,9 @@
+# Changelog
+
+## 0.0.23
+
+* Improved Android support.
+
 ## 0.0.14
 
 * Stable iOS version.
