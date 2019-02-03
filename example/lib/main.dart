@@ -55,7 +55,6 @@ class _MyAppState extends State<MyApp> {
         statusMapper: '',
       );
       response.status = NFCStatus.error;
-      ;
     }
 
     setState(() {
