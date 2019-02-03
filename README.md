@@ -16,7 +16,7 @@ dependencies:
   flutter_nfc_reader:
     git:
       url: git://github.com/matteocrippa/flutter-nfc-reader.git
-      ref: feature/refactor
+      ref: master
 ```
 
 and then run the shell
@@ -48,9 +48,8 @@ Add those two lines to your `AndroidManifest.xml` on the top
 
 Atm only `Swift` based Flutter project are supported.
 
-- Enable Capabilities / Near Field Communication Tag Reading. 
+- Enable Capabilities / Near Field Communication Tag Reading.
 - Info.plist file, add Privacy - NFC Scan Usage Description with string value NFC Tag.
-
 
 ### Read NFC
 
@@ -85,6 +84,7 @@ Future<void> startNFC() async {
 ```
 
 ### Stop NFC
+
 ```dart
 Future<void> stopNFC() async {
     NfcData response;
