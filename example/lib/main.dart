@@ -12,60 +12,54 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  String _nfcData = '';
-  bool _nfcReading = false;
+  NfcData _nfcData;
 
   @override
   void initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-
-    try {
-      platformVersion = await FlutterNfcReader.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   Future<void> startNFC() async {
-    String response;
-    bool reading = true;
+    NfcData response;
+
+    setState(() {
+      _nfcData = NfcData();
+      _nfcData.status = NFCStatus.reading;
+    });
+
+    print('NFC: Scan started');
 
     try {
+      print('NFC: Scan readed NFC tag');
       response = await FlutterNfcReader.read;
-      reading = false;
     } on PlatformException {
-      response = '';
-      reading = false;
+      print('NFC: Scan stopped exception');
     }
     setState(() {
-      _nfcReading = reading;
       _nfcData = response;
     });
   }
 
   Future<void> stopNFC() async {
-    bool response;
+    NfcData response;
+
     try {
-      final bool result = await FlutterNfcReader.stop;
-      response = result;
+      print('NFC: Stop scan by user');
+      response = await FlutterNfcReader.stop;
     } on PlatformException {
-      response = false;
+      print('NFC: Stop scan exception');
+      response = NfcData(
+        id: '',
+        content: '',
+        error: 'NFC scan stop exception',
+        statusMapper: '',
+      );
+      response.status = NFCStatus.error;
+      ;
     }
+
     setState(() {
-      _nfcReading = response;
+      _nfcData = response;
     });
   }
 
@@ -86,15 +80,23 @@ class _MyAppState extends State<MyApp> {
                     height: 10.0,
                   ),
                   new Text(
-                    'Running on: $_platformVersion\n',
+                    '- NFC Status -\n',
                     textAlign: TextAlign.center,
                   ),
                   new Text(
-                    'NFC is Reading: $_nfcReading\n',
+                    _nfcData != null ? 'Status: ${_nfcData.status}' : '',
                     textAlign: TextAlign.center,
                   ),
                   new Text(
-                    'NFC Data: $_nfcData\n',
+                    _nfcData != null ? 'Identifier: ${_nfcData.id}' : '',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    _nfcData != null ? 'Content: ${_nfcData.content}' : '',
+                    textAlign: TextAlign.center,
+                  ),
+                  new Text(
+                    _nfcData != null ? 'Error: ${_nfcData.error}' : '',
                     textAlign: TextAlign.center,
                   ),
                   new RaisedButton(

@@ -8,7 +8,12 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
     fileprivate var nfcSession: NFCNDEFReaderSession? = nil
     fileprivate var instruction: String? = nil
     fileprivate var resulter: FlutterResult? = nil
-    
+
+    fileprivate let kId = "nfcId"
+    fileprivate let kContent = "nfcContent"
+    fileprivate let kStatus = "nfcStatus"
+    fileprivate let kError = "nfcError"
+
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_nfc_reader", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterNfcReaderPlugin()
@@ -50,7 +55,9 @@ extension SwiftFlutterNfcReaderPlugin {
     
     func disableNFC() {
         nfcSession?.invalidate()
-        resulter?(true)
+        let data = [kId: "", kContent: "", kError: "", kStatus: "stopped"]
+
+        resulter?(data)
         resulter = nil
     }
 
@@ -61,20 +68,21 @@ extension SwiftFlutterNfcReaderPlugin {
 extension SwiftFlutterNfcReaderPlugin : NFCNDEFReaderSessionDelegate {
     
     public func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
-        var result = ""
-        for message in messages {
-            for payload in message.records {
-                if let s = String(data: payload.payload.advanced(by: 3), encoding: .utf8) {
-                    result += s
-                }
-            }
-        }
+        guard let message = messages.first else { return }
+	    guard let payload = message.records.first else { return }
+	    guard let payloadContent = String(data: payload.payload, encoding: String.Encoding.utf8) else { return }
 
-        resulter?(result)
+        let data = [kId: "", kContent: payloadContent, kError: "", kStatus: "read"]
+
+        resulter?(data)
         disableNFC()
     }
     
     public func readerSession(_ session: NFCNDEFReaderSession, didInvalidateWithError error: Error) {
         print(error.localizedDescription)
+        let data = [kId: "", kContent: "", kError: error.localizedDescription, kStatus: "error"]
+
+        resulter?(data)
+        disableNFC()
     }
 }

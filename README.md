@@ -1,9 +1,35 @@
 # Flutter NFC Reader
 
+![](https://raw.githubusercontent.com/matteocrippa/flutter-nfc-reader/feature/refactor/.github/nfc-flutter-logo.jpg)
+
 A new flutter plugin to help developers looking to use internal hardware inside iOS or Android devices for reading NFC tags.
 
 The system activate a pooling reading session that stops automatically once a tag has been recognised.
 You can also trigger the stop event manually using a dedicated function.
+
+## Installation
+
+Add to pubspec.yaml:
+
+```yaml
+dependencies:
+  flutter_nfc_reader:
+    git:
+      url: git://github.com/matteocrippa/flutter-nfc-reader.git
+      ref: feature/refactor
+```
+
+and then run the shell
+
+```shell
+flutter packages get
+```
+
+last step import to the project:
+
+```dart
+import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
+```
 
 ## How to use
 
@@ -29,23 +55,30 @@ Atm only `Swift` based Flutter project are supported.
 ### Read NFC
 
 This function will return a promise when a read occurs, till that very moment the reading session is open.
-The promise will return a map with `<String, dynamic>`.
-The map will have inside `status` or `data` key.
-In order to stop a reading session you need to use `stop` function.
+The promise will return a `NfcData` model, this model contains:
+
+- id > id of the tag
+- content > content of the tag
+- error > if any error occurs
 
 ```dart
 Future<void> startNFC() async {
-    String response;
-    bool reading = true;
+    NfcData response;
+
+    setState(() {
+      _nfcData = NfcData();
+      _nfcData.status = NFCStatus.reading;
+    });
+
+    print('NFC: Scan started');
 
     try {
+      print('NFC: Scan readed NFC tag');
       response = await FlutterNfcReader.read;
     } on PlatformException {
-      response = '';
-      reading = false;
+      print('NFC: Scan stopped exception');
     }
     setState(() {
-      _nfcReading = reading;
       _nfcData = response;
     });
   }
@@ -53,27 +86,31 @@ Future<void> startNFC() async {
 
 ### Stop NFC
 ```dart
+Future<void> stopNFC() async {
+    NfcData response;
 
-  Future<void> stopNFC() async {
-    bool response;
     try {
-      final bool result = await FlutterNfcReader.stop;
-      response = result;
+      print('NFC: Stop scan by user');
+      response = await FlutterNfcReader.stop;
     } on PlatformException {
-      response = false;
+      print('NFC: Stop scan exception');
+      response = NfcData(
+        id: '',
+        content: '',
+        error: 'NFC scan stop exception',
+        statusMapper: '',
+      );
+      response.status = NFCStatus.error;
+      ;
     }
+
     setState(() {
-      _nfcReading = response;
+      _nfcData = response;
     });
   }
 ```
 
 For better details look at the demo app.
-
-## Extra
-
-`FlutterNfcReader.read()` has an optional parameter, only for **iOS**, called `instruction`.
-You can pass a _String_ that contains information to be shown in the modal screen.
 
 ## Getting Started
 

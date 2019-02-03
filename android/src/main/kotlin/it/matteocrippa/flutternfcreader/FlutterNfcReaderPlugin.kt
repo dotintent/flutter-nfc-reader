@@ -1,5 +1,6 @@
 package it.matteocrippa.flutternfcreader
 
+import android.Manifest
 import android.content.Context
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
@@ -13,13 +14,23 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.nio.charset.Charset
 
+
+const val PERMISSION_NFC = 1007
+
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  NfcAdapter.ReaderCallback {
+
+    private val activity = registrar.activity()
+
     private var isReading = false
-    private var stopOnFirstDiscovered = false
     private var nfcAdapter: NfcAdapter? = null
     private var nfcManager: NfcManager? = null
 
     private var resulter: Result? = null
+
+    private var kId = "nfcId"
+    private var kContent = "nfcContent"
+    private var kError = "nfcError"
+    private var kStatus = "nfcStatus"
 
     private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A
 
@@ -32,29 +43,36 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
     }
 
     init {
-        nfcManager = registrar.activity().getSystemService(Context.NFC_SERVICE) as? NfcManager
+        nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
         nfcAdapter = nfcManager?.defaultAdapter
     }
 
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
 
         when (call.method) {
-            "getPlatformVersion" -> {
-                result.success("Android ${android.os.Build.VERSION.RELEASE}")
-            }
             "NfcRead" -> {
-                startNFC()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    activity.requestPermissions(
+                        arrayOf(Manifest.permission.NFC),
+                        PERMISSION_NFC
+                    )
+                }
+
                 resulter = result
+                startNFC()
 
                 if (!isReading) {
-                    result.success("NFC Hardware not found")
+                    val data = mapOf(kId to "", kContent to "", kError to "NFC Hardware not found", kStatus to "error")
+                    result.success(data)
                     resulter = null
                 }
 
             }
             "NfcStop" -> {
                 stopNFC()
-                result.success(isReading)
+                val data = mapOf(kId to "", kContent to "", kError to "", kStatus to "stopped")
+                result.success(data)
             }
             else -> {
                 result.notImplemented()
@@ -91,12 +109,15 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler,  Nfc
         // ndef will be null if the discovered tag is not a NDEF tag
         // read NDEF message
         ndef?.connect()
-        val message = ndef?.getNdefMessage()
+        val message = ndef?.ndefMessage
                           ?.toByteArray()
-                          ?.toString(Charset.forName("UTF-8"))
+                          ?.toString(Charset.forName("UTF-8")) ?: ""
+        //val id = tag?.id?.toString(Charset.forName("ISO-8859-1")) ?: ""
+        val id = bytesToHexString(tag?.id) ?: ""
         ndef?.close()
         if (message != null) {
-            resulter?.success(message)
+            val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
+            resulter?.success(data)
         }
     }
 
