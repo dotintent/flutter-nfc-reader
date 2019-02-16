@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 
@@ -20,8 +20,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> startNFC() async {
-    NfcData response;
-
     setState(() {
       _nfcData = NfcData();
       _nfcData.status = NFCStatus.reading;
@@ -29,14 +27,11 @@ class _MyAppState extends State<MyApp> {
 
     print('NFC: Scan started');
 
-    try {
-      print('NFC: Scan readed NFC tag');
-      response = await FlutterNfcReader.read;
-    } on PlatformException {
-      print('NFC: Scan stopped exception');
-    }
-    setState(() {
-      _nfcData = response;
+    print('NFC: Scan readed NFC tag');
+    FlutterNfcReader.read.listen((response) {
+      setState(() {
+        _nfcData = response;
+      });
     });
   }
 
