@@ -9,9 +9,10 @@ You can also trigger the stop event manually using a dedicated function.
 
 ## Supported NFC Format
 
-| Platform | Supported NFC Tags
-| Android | NDEF
-| iOS | NDEF
+| Platform | Supported NFC Tags |
+| --- | --- |
+| Android | NDEF |
+| iOS | NDEF |
 
 ## Installation
 
