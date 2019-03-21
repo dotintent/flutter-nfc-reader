@@ -7,6 +7,12 @@ A new flutter plugin to help developers looking to use internal hardware inside 
 The system activate a pooling reading session that stops automatically once a tag has been recognised.
 You can also trigger the stop event manually using a dedicated function.
 
+## Supported NFC Format
+
+| Platform | Type |
+| Android | NDEF |
+| iOS | NDEF |
+
 ## Installation
 
 Add to pubspec.yaml:
@@ -112,3 +118,8 @@ For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
 
 For help on editing plugin code, view the [documentation](https://flutter.io/developing-packages/#edit-plugin-package).
+
+## Contributing
+
+Please take a quick look at the [contribution guidelines](https://github.com/matteocrippa/flutter-nfc-reader/blob/master/.github/CONTRIBUTING.md) first. If you see a package or project here that is no longer maintained or is not a good fit, please submit a pull request to improve this file. 
+Thank you to all [contributors](https://github.com/matteocrippa/flutter-nfc-reader/graphs/contributors)!!
