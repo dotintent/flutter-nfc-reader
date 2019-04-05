@@ -11,8 +11,8 @@ You can also trigger the stop event manually using a dedicated function.
 
 | Platform | Supported NFC Tags |
 | --- | --- |
-| Android | NDEF |
-| iOS | NDEF |
+| Android | **NDEF:**  A, B, F, V, BARCODE|
+| iOS | **NDEF:** NFC TYPE 1, 2, 3, 4, 5 |
 
 ## Installation
 
