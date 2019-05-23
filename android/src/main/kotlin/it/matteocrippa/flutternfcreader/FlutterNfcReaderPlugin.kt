@@ -125,8 +125,8 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         // ndef will be null if the discovered tag is not a NDEF tag
         // read NDEF message
         ndef?.connect()
-        val message = ndef?.ndefMessage
-                          ?.toByteArray()
+        val ndefMessage = ndef?.ndefMessage ?: ndef?.cachedNdefMessage
+        val message = ndefMessage?.toByteArray()
                           ?.toString(Charset.forName("UTF-8")) ?: ""
         //val id = tag?.id?.toString(Charset.forName("ISO-8859-1")) ?: ""
         val id = bytesToHexString(tag?.id) ?: ""
