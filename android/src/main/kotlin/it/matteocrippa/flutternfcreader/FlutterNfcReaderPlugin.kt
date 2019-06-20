@@ -7,6 +7,7 @@ import android.nfc.NfcManager
 import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Build
+import android.os.Handler
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.StreamHandler
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -16,6 +17,9 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.nio.charset.Charset
+import android.os.Looper
+
+
 
 
 const val PERMISSION_NFC = 1007
@@ -133,7 +137,10 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         ndef?.close()
         if (message != null) {
             val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
-            eventSink?.success(data)
+            val mainHandler = Handler(Looper.getMainLooper())
+            mainHandler.post {
+                eventSink?.success(data)
+            }
         }
     }
 
