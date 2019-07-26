@@ -133,7 +133,9 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         ndef?.close()
         if (message != null) {
             val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
-            eventSink?.success(data)
+            Handler(Looper.getMainLooper()).post {
+                eventSink?.success(data)
+            }
         }
     }
 
