@@ -7,6 +7,7 @@ import android.nfc.NfcManager
 import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Build
+import android.os.Handler
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.StreamHandler
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -16,6 +17,9 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.nio.charset.Charset
+import android.os.Looper
+
+
 
 
 const val PERMISSION_NFC = 1007
@@ -129,15 +133,18 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         // ndef will be null if the discovered tag is not a NDEF tag
         // read NDEF message
         ndef?.connect()
-        val message = ndef?.ndefMessage
-                          ?.toByteArray()
+        val ndefMessage = ndef?.ndefMessage ?: ndef?.cachedNdefMessage
+        val message = ndefMessage?.toByteArray()
                           ?.toString(Charset.forName("UTF-8")) ?: ""
         //val id = tag?.id?.toString(Charset.forName("ISO-8859-1")) ?: ""
         val id = bytesToHexString(tag?.id) ?: ""
         ndef?.close()
         if (message != null) {
             val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
-            eventSink?.success(data)
+            val mainHandler = Handler(Looper.getMainLooper())
+            mainHandler.post {
+                eventSink?.success(data)
+            }
         }
     }
 
