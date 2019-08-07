@@ -94,7 +94,7 @@ FlutterNfcReader.read().then((response) {
 ```
 
 
-### Write NFC
+### Write NFC (Only Android)
 
 This function will return a promise when a write occurs, till that very moment the reading session is open.
 The promise will return a `NfcData` model, this model contains:
