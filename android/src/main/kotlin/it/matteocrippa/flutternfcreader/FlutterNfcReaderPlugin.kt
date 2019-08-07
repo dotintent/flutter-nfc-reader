@@ -194,7 +194,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             val nfcRecord = NdefRecord(NdefRecord.TNF_EXTERNAL_TYPE, kPath.toByteArray(), ByteArray(0), kWrite.toByteArray())
             val nfcMessage = NdefMessage(arrayOf(nfcRecord))
             writeMessageToTag(nfcMessage, tag)
-            val data = mapOf(kId to "", kContent to kWrite, kError to "", kStatus to "read")
+            val data = mapOf(kId to "", kContent to kWrite, kError to "", kStatus to "write")
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
                 writeResult?.success(data)
@@ -214,7 +214,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             val id = bytesToHexString(tag?.id) ?: ""
             ndef?.close()
             if (message != null) {
-                val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "read")
+                val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "reading")
                 val mainHandler = Handler(Looper.getMainLooper())
                 mainHandler.post {
                     readResult?.success(data)
