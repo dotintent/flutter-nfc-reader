@@ -102,7 +102,7 @@ The promise will return a `NfcData` model, this model contains:
 - content > writed in the tag
 
 ```dart
-FlutterNfcReader.read().then((response) {
+FlutterNfcReader.write("path_prefix","tag content").then((response) {
 print(response.content);
 });
 ```
