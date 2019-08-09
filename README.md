@@ -107,6 +107,18 @@ print(response.content);
 });
 ```
 
+### Read & Write NFC (Only Android)
+
+You can read and then write in an nfc tag using the above functions as follows
+
+```dart
+FlutterNfcReader.read().then((readResponse) {
+    FlutterNfcReader.write(" ",readResponse.content).then((writeResponse) {
+        print('writed: ${writeResponse.content}');
+    });
+});
+```
+
 
 ### Stop NFC
 

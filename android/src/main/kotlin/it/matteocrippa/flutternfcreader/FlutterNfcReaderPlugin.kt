@@ -37,13 +37,14 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     private var kPath = ""
     private var readResult :Result? = null
     private var writeResult :Result? = null
+    private var tag:Tag? = null
 
     private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A or
             NfcAdapter.FLAG_READER_NFC_B or
             NfcAdapter.FLAG_READER_NFC_BARCODE or
             NfcAdapter.FLAG_READER_NFC_F or
             NfcAdapter.FLAG_READER_NFC_V
-            
+
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
@@ -162,6 +163,9 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                     writeResult = result
                     kWrite = call.argument("label")!!
                     kPath = call.argument("path")!!
+                    if(this.tag!=null){
+                        writeTag()
+                    }
                 }
 
 
@@ -188,8 +192,8 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         }
     }
 
-    // handle discovered NDEF Tags
-    override fun onTagDiscovered(tag: Tag?) {
+
+    private fun writeTag(){
         if(writeResult!=null){
             val nfcRecord = NdefRecord(NdefRecord.TNF_EXTERNAL_TYPE, kPath.toByteArray(), ByteArray(0), kWrite.toByteArray())
             val nfcMessage = NdefMessage(arrayOf(nfcRecord))
@@ -201,8 +205,10 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                 writeResult=null;
             }
         }
-       /* */
+    }
 
+
+    private fun readTag(){
         if(readResult!=null){
             // convert tag to NDEF tag
             val ndef = Ndef.get(tag)
@@ -223,7 +229,16 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             }
 
         }
+    }
 
+    // handle discovered NDEF Tags
+    override fun onTagDiscovered(tag: Tag?) {
+        this.tag=tag
+        writeTag()
+        readTag()
+        Handler().postDelayed(Runnable {
+            this.tag=null;
+        },2000);
     }
 
     private fun bytesToHexString(src: ByteArray?): String? {
