@@ -58,7 +58,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
     init {
-        nfcManager = activity.getSystemService(Context.NFC_SERVICE)
+        nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
         nfcAdapter = nfcManager?.defaultAdapter
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -188,7 +188,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             val data = mapOf(kId to "", kContent to kWrite, kError to "", kStatus to "write")
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
-                writeResult.success(data)
+                writeResult?.success(data)
                 writeResult = null
             }
         }
@@ -209,7 +209,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "reading")
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
-                readResult.success(data)
+                readResult?.success(data)
                 readResult = null
             }
 
