@@ -221,9 +221,11 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         this.tag = tag
         writeTag()
         readTag()
+        Looper.prepare()
         Handler().postDelayed(Runnable {
             this.tag = null
         }, 2000)
+        Looper.loop()
     }
 
     private fun bytesToHexString(src: ByteArray?): String? {
