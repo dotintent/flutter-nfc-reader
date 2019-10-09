@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.00
+
+* Total refactor, add write support for Android
+
 ## 0.0.23
 
 * Improved Android support.
