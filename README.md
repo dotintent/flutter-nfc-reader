@@ -9,10 +9,10 @@ You can also trigger the stop event manually using a dedicated function.
 
 ## Supported NFC Format
 
-| Platform | Supported NFC Tags |
-| --- | --- |
-| Android | **NDEF:**  A, B, F, V, BARCODE|
-| iOS | **NDEF:** NFC TYPE 1, 2, 3, 4, 5 |
+| Platform | Supported NFC Tags               |
+| -------- | -------------------------------- |
+| Android  | **NDEF:**  A, B, F, V, BARCODE   |
+| iOS      | **NDEF:** NFC TYPE 1, 2, 3, 4, 5 |
 
 
 ## Only Android supports nfc tag writing
@@ -93,6 +93,16 @@ FlutterNfcReader.read().then((response) {
 });
 ```
 
+### Stream NFC
+
+this function will return a Stream that emits `NfcData` everytime a tag is recognized.
+
+```dart
+FlutterNfcReader.onTagDiscovered().listen((onData) {
+  print(onData.id);
+  print(onData.content);
+});
+```
 
 ### Write NFC (Only Android)
 
@@ -119,7 +129,6 @@ FlutterNfcReader.read().then((readResponse) {
 });
 ```
 
-
 ### Stop NFC
 
 - status > status of ncf reading or writing stoped
@@ -141,5 +150,5 @@ For help on editing plugin code, view the [documentation](https://flutter.io/dev
 
 ## Contributing
 
-Please take a quick look at the [contribution guidelines](https://github.com/matteocrippa/flutter-nfc-reader/blob/master/.github/CONTRIBUTING.md) first. If you see a package or project here that is no longer maintained or is not a good fit, please submit a pull request to improve this file. 
+Please take a quick look at the [contribution guidelines](https://github.com/matteocrippa/flutter-nfc-reader/blob/master/.github/CONTRIBUTING.md) first. If you see a package or project here that is no longer maintained or is not a good fit, please submit a pull request to improve this file.
 Thank you to all [contributors](https://github.com/matteocrippa/flutter-nfc-reader/graphs/contributors)!!
