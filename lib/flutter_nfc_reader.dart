@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
@@ -73,6 +74,9 @@ class FlutterNfcReader {
   }
 
   static Stream<NfcData> onTagDiscovered() {
+    if (Platform.isIOS) {
+      _channel.invokeMethod('NfcRead');
+    }
     return stream.receiveBroadcastStream().map((rawNfcData) {
       return NfcData.fromMap(rawNfcData);
     });
