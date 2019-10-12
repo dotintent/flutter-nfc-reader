@@ -95,7 +95,7 @@ FlutterNfcReader.read().then((response) {
 
 ### Stream NFC
 
-this function will return a Stream that emits `NfcData` everytime a tag is recognized.
+this function will return a Stream that emits `NfcData` everytime a tag is recognized. On Ios you can use this too but IOS will always show a bottom sheet when it wants to scan a NFC Tag. Therefore you need to explicitly cast `FlutterNfcReader.read()` when you expect a second value. When subscribing to the stream the read function is called a first time for you. View the Example for a sample implementation.
 
 ```dart
 FlutterNfcReader.onTagDiscovered().listen((onData) {
@@ -141,6 +141,13 @@ FlutterNfcReader.stop().then((response) {
 
 For better details look at the demo app.
 
+### IOS Specifics
+
+IOS behaves a bit different in terms of NFC Scanning and writing.
+
+- Ids of the tags aren't possible in the current implementation
+- each scan is visible for the user with a bottom sheet 
+
 ## Getting Started
 
 For help getting started with Flutter, view our online
@@ -152,3 +159,7 @@ For help on editing plugin code, view the [documentation](https://flutter.io/dev
 
 Please take a quick look at the [contribution guidelines](https://github.com/matteocrippa/flutter-nfc-reader/blob/master/.github/CONTRIBUTING.md) first. If you see a package or project here that is no longer maintained or is not a good fit, please submit a pull request to improve this file.
 Thank you to all [contributors](https://github.com/matteocrippa/flutter-nfc-reader/graphs/contributors)!!
+
+to develop on ios you need to activate the "legacy" build system because of this issue in flutter:
+
+<https://github.com/flutter/flutter/issues/20685>
