@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+Add support for swift continuous reading
+Improved documentation
+
 ## 0.1.00
 
 * Total refactor, add write support for Android
