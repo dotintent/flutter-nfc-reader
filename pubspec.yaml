@@ -5,8 +5,8 @@ author: Matteo Crippa
 homepage: https://github.com/matteocrippa/flutter-nfc-reader
 
 environment:
-  sdk: '>=1.19.0 <3.0.0'
-  flutter: '>= 0.9.3-pre'
+  sdk: ">=1.19.0 <3.0.0"
+  flutter: ">= 0.9.3-pre"
 
 dependencies:
   flutter:

@@ -18,7 +18,6 @@ import java.nio.charset.Charset
 import android.os.Looper
 import java.io.IOException
 
-
 const val PERMISSION_NFC = 1007
 
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, EventChannel.StreamHandler, NfcAdapter.ReaderCallback {
@@ -38,6 +37,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     private var readResult: Result? = null
     private var writeResult: Result? = null
     private var tag: Tag? = null
+    private var eventChannel: EventChannel.EventSink? = null;
 
     private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A or
             NfcAdapter.FLAG_READER_NFC_B or
@@ -166,10 +166,12 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
     // EventChannel.StreamHandler methods
-    override fun onListen(arguments: Any?, eventSink: EventChannel.EventSink?) {
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+        eventChannel = events;
     }
 
     override fun onCancel(arguments: Any?) {
+        eventChannel =  null;
     }
 
 
@@ -212,7 +214,21 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                 readResult?.success(data)
                 readResult = null
             }
-
+        } else {
+            // convert tag to NDEF tag
+            val ndef = Ndef.get(tag)
+            ndef?.connect()
+            val ndefMessage = ndef?.ndefMessage ?: ndef?.cachedNdefMessage
+            val message = ndefMessage?.toByteArray()
+                    ?.toString(Charset.forName("UTF-8")) ?: ""
+            //val id = tag?.id?.toString(Charset.forName("ISO-8859-1")) ?: ""
+            val id = bytesToHexString(tag?.id) ?: ""
+            ndef?.close()
+            val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "reading")
+            val mainHandler = Handler(Looper.getMainLooper())
+            mainHandler.post {
+                eventChannel?.success(data);
+            }
         }
     }
 
@@ -221,11 +237,9 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         this.tag = tag
         writeTag()
         readTag()
-        Looper.prepare()
-        Handler().postDelayed(Runnable {
+        Handler(Looper.getMainLooper()).postDelayed({
             this.tag = null
         }, 2000)
-        Looper.loop()
     }
 
     private fun bytesToHexString(src: ByteArray?): String? {

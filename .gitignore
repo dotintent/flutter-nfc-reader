@@ -10,3 +10,4 @@ packages
 pubspec.lock
 *.iml
 *.log
+flutter_export_environment.sh

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
 
@@ -58,26 +59,35 @@ class FlutterNfcReader {
   static const stream =
       const EventChannel('it.matteocrippa.flutternfcreader.flutter_nfc_reader');
 
- static Future<NfcData>  stop() async{
+  static Future<NfcData> stop() async {
     final Map data = await _channel.invokeMethod('NfcStop');
     final NfcData result = NfcData.fromMap(data);
 
     return result;
   }
 
-  static Future<NfcData>  read() async{
+  static Future<NfcData> read() async {
     final Map data = await _channel.invokeMethod('NfcRead');
     final NfcData result = NfcData.fromMap(data);
 
     return result;
   }
 
-  static Future<NfcData> write(String path,String label) async {
-    final Map data = await _channel.invokeMethod('NfcWrite',<String,dynamic>{'label':label,'path':path});
+  static Stream<NfcData> onTagDiscovered() {
+    if (Platform.isIOS) {
+      _channel.invokeMethod('NfcRead');
+    }
+    return stream.receiveBroadcastStream().map((rawNfcData) {
+      return NfcData.fromMap(rawNfcData);
+    });
+  }
+
+  static Future<NfcData> write(String path, String label) async {
+    final Map data = await _channel.invokeMethod(
+        'NfcWrite', <String, dynamic>{'label': label, 'path': path});
 
     final NfcData result = NfcData.fromMap(data);
 
     return result;
   }
-
 }
