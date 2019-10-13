@@ -23,10 +23,17 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
+  flutter_nfc_reader: ^0.1.0
+```
+
+or to get the experimental one:
+
+```yaml
+dependencies:
   flutter_nfc_reader:
     git:
       url: git://github.com/matteocrippa/flutter-nfc-reader.git
-      ref: master
+      ref: develop
 ```
 
 and then run the shell
