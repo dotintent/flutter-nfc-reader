@@ -22,12 +22,12 @@ import android.util.Log
 const val PERMISSION_NFC = 1007
 
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, EventChannel.StreamHandler, NfcAdapter.ReaderCallback {
-    private val logTag = "FlutterNfcReaderPlugin"
     private val activity = registrar.activity()
 
     private var nfcAdapter: NfcAdapter? = null
     private var nfcManager: NfcManager? = null
 
+    const val LOG_TAG = "FlutterNfcReaderPlugin"
 
     private var kId = "nfcId"
     private var kContent = "nfcContent"
@@ -49,7 +49,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     companion object {
         @JvmStatic
         fun registerWith(registrar: Registrar): Unit {
-            Log.v(logTag, registerWith)
+            Log.v(LOG_TAG, "registerWith")
             val messenger = registrar.messenger()
             val channel = MethodChannel(messenger, "flutter_nfc_reader")
             val eventChannel = EventChannel(messenger, "it.matteocrippa.flutternfcreader.flutter_nfc_reader")
@@ -60,14 +60,14 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
     init {
-        Log.v(logTag, "init")
+        Log.v(LOG_TAG, "init")
         if(activity != null) {
-            Log.v(logTag, "have activity")
+            Log.v(LOG_TAG, "have activity")
             nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
             nfcAdapter = nfcManager?.defaultAdapter
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Log.v(logTag, "requesting permissions")
+                Log.v(LOG_TAG, "requesting permissions")
                 activity.requestPermissions(
                         arrayOf(Manifest.permission.NFC),
                         PERMISSION_NFC
@@ -75,7 +75,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                Log.v(logTag, "enabling reader mode")
+                Log.v(LOG_TAG, "enabling reader mode")
                 nfcAdapter?.enableReaderMode(activity, this, READER_FLAGS, null)
             }
         }
@@ -138,7 +138,6 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         return false
     }
 
-
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
 
         if (nfcAdapter?.isEnabled != true) {
@@ -180,18 +179,16 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         eventChannel =  null;
     }
 
-
     private fun stopNFC() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             nfcAdapter?.disableReaderMode(activity)
         }
     }
 
-
     private fun writeTag() {
-        Log.v(logTag, "writing tag")
+        Log.v(LOG_TAG, "writing tag")
         if (writeResult != null) {
-            Log.v(logTag, "have writeResult")
+            Log.v(LOG_TAG, "have writeResult")
             val nfcRecord = NdefRecord(NdefRecord.TNF_EXTERNAL_TYPE, kPath.toByteArray(), ByteArray(0), kWrite.toByteArray())
             val nfcMessage = NdefMessage(arrayOf(nfcRecord))
             writeMessageToTag(nfcMessage, tag)
@@ -204,10 +201,9 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
         }
     }
 
-
     private fun readTag() {
         if (readResult != null) {
-            Log.v(logTag, "have readResult")
+            Log.v(LOG_TAG, "have readResult")
             // convert tag to NDEF tag
             val ndef = Ndef.get(tag)
             ndef?.connect()
@@ -224,7 +220,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                 readResult = null
             }
         } else {
-            Log.v(logTag, "readResult null")
+            Log.v(LOG_TAG, "readResult null")
             // convert tag to NDEF tag
             val ndef = Ndef.get(tag)
             ndef?.connect()
@@ -244,7 +240,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
 
     // handle discovered NDEF Tags
     override fun onTagDiscovered(tag: Tag?) {
-        Log.v(logTag, "tag discovered")
+        Log.v(LOG_TAG, "tag discovered")
         this.tag = tag
         writeTag()
         readTag()
