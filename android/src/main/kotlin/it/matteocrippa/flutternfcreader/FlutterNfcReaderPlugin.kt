@@ -138,6 +138,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
     override fun onMethodCall(call: MethodCall, result: Result): Unit {
+        Log.v(LOG_TAG, "onMethodCall")
 
         if (nfcAdapter?.isEnabled != true) {
             result.error("404", "NFC Hardware not found", null)
@@ -155,10 +156,12 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             }
 
             "NfcWrite" -> {
+                Log.v(LOG_TAG, "NfcWrite")
                 writeResult = result
                 kWrite = call.argument("label")!!
                 kPath = call.argument("path")!!
                 if (this.tag != null) {
+                    Log.v(LOG_TAG, "tag != null")
                     writeTag()
                 }
             }
@@ -187,7 +190,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     private fun writeTag() {
         Log.v(LOG_TAG, "writing tag")
         if (writeResult != null) {
-            Log.v(LOG_TAG, "have writeResult")
+            Log.v(LOG_TAG, "writeResult != null")
             val nfcRecord = NdefRecord(NdefRecord.TNF_EXTERNAL_TYPE, kPath.toByteArray(), ByteArray(0), kWrite.toByteArray())
             val nfcMessage = NdefMessage(arrayOf(nfcRecord))
             writeMessageToTag(nfcMessage, tag)
@@ -197,12 +200,14 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                 writeResult?.success(data)
                 writeResult = null
             }
+        } else {
+            Log.v(LOG_TAG, "writeResult == null")
         }
     }
 
     private fun readTag() {
         if (readResult != null) {
-            Log.v(LOG_TAG, "have readResult")
+            Log.v(LOG_TAG, "readResult != null")
             // convert tag to NDEF tag
             val ndef = Ndef.get(tag)
             ndef?.connect()
@@ -219,7 +224,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                 readResult = null
             }
         } else {
-            Log.v(LOG_TAG, "readResult null")
+            Log.v(LOG_TAG, "readResult == null")
             // convert tag to NDEF tag
             val ndef = Ndef.get(tag)
             ndef?.connect()
