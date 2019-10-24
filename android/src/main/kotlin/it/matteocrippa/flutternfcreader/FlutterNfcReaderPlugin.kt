@@ -20,14 +20,13 @@ import java.io.IOException
 import android.util.Log
 
 const val PERMISSION_NFC = 1007
+const val LOG_TAG = "FlutterNfcReaderPlugin"
 
 class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, EventChannel.StreamHandler, NfcAdapter.ReaderCallback {
     private val activity = registrar.activity()
 
     private var nfcAdapter: NfcAdapter? = null
     private var nfcManager: NfcManager? = null
-
-    const val LOG_TAG = "FlutterNfcReaderPlugin"
 
     private var kId = "nfcId"
     private var kContent = "nfcContent"
