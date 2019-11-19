@@ -58,21 +58,21 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
     init {
-        nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
-        nfcAdapter = nfcManager?.defaultAdapter
+        if(activity != null) {
+            nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
+            nfcAdapter = nfcManager?.defaultAdapter
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.requestPermissions(
-                    arrayOf(Manifest.permission.NFC),
-                    PERMISSION_NFC
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity.requestPermissions(
+                        arrayOf(Manifest.permission.NFC),
+                        PERMISSION_NFC
+                )
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                nfcAdapter?.enableReaderMode(activity, this, READER_FLAGS, null)
+            }
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            nfcAdapter?.enableReaderMode(activity, this, READER_FLAGS, null)
-        }
-
-
     }
 
     private fun writeMessageToTag(nfcMessage: NdefMessage, tag: Tag?): Boolean {
