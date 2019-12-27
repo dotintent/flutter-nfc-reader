@@ -90,6 +90,9 @@ use_frameworks!
 This function will return a promise when a read occurs, till that very moment the reading session is open.
 The promise will return a `NfcData` model, this model contains:
 
+`FlutterNfcReader.read()` has an optional parameter, only for **iOS**, called `instruction`.
+You can pass a _String_ that contains information to be shown in the modal screen.
+
 - id > id of the tag
 - content > content of the tag
 - error > if any error occurs

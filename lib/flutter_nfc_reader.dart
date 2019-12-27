@@ -66,10 +66,11 @@ class FlutterNfcReader {
     return result;
   }
 
-  static Future<NfcData> read() async {
-    final Map data = await _channel.invokeMethod('NfcRead');
+  static Future<NfcData> read({instruction: String}) async {
+    final Map data = await _channel.invokeMethod('NfcRead', {
+      "instruction": instruction
+    });
     final NfcData result = NfcData.fromMap(data);
-
     return result;
   }
 
