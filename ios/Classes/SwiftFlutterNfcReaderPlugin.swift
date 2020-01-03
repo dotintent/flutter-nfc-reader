@@ -42,6 +42,9 @@ public class SwiftFlutterNfcReaderPlugin: NSObject, FlutterPlugin {
             var alertController = UIAlertController(title: nil, message: "IOS does not support NFC tag writing", preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true)
+        case "NfcAvailable":
+            var nfcAvailable = NFCNDEFReaderSession.readingAvailable
+            result(nfcAvailable ? "available" : "not_supported")
         default:
             result("iOS " + UIDevice.current.systemVersion)
         }

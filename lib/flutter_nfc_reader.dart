@@ -93,4 +93,12 @@ class FlutterNfcReader {
 
     return result;
   }
+  static Future<NFCAvailability> checkNFCAvailability() async {
+    var availability = "NFCAvailability.${await _channel.invokeMethod<String>("NfcAvailable")}";
+    return NFCAvailability.values.firstWhere((item) => item.toString() == availability);
+  }
+}
+
+enum NFCAvailability {
+  available, disabled, not_supported
 }

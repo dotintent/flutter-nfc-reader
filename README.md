@@ -151,6 +151,10 @@ FlutterNfcReader.stop().then((response) {
 
 For better details look at the demo app.
 
+### Check NFC Availability
+In order to check whether the Device supports NFC or not you can call `FlutterNfcReader.checkNFCAvailability()`.
+The method returns `NFCAvailability.available` when NFC is supported and enabled, `NFCAvailability.disabled` when NFC is disabled (Android only) and `NFCAvailability.not_supported` when the user's hardware does not support NFC.
+
 ### IOS Specifics
 
 IOS behaves a bit different in terms of NFC Scanning and writing.
