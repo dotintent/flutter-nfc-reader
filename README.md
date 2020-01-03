@@ -61,12 +61,12 @@ Add those two lines to your `AndroidManifest.xml` on the top
         android:required="true" />
 ```
 
-Assign 18 in minSdkVersion in the  `build.gradle (Module: app)`
+Assign 19 in minSdkVersion in the  `build.gradle (Module: app)`
 
 ```gradle
 defaultConfig {
 ...
-minSdkVersion 18
+minSdkVersion 19
 ...
 }
 ```
