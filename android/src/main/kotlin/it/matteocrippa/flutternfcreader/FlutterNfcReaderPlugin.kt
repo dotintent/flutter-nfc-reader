@@ -20,7 +20,7 @@ import java.io.IOException
 
 const val PERMISSION_NFC = 1007
 
-class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, EventChannel.StreamHandler, NfcAdapter.ReaderCallback {
+class FlutterNfcReaderPlugin(registrar: Registrar) : MethodCallHandler, EventChannel.StreamHandler, NfcAdapter.ReaderCallback {
 
     private val activity = registrar.activity()
 
@@ -37,9 +37,9 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     private var readResult: Result? = null
     private var writeResult: Result? = null
     private var tag: Tag? = null
-    private var eventChannel: EventChannel.EventSink? = null;
+    private var eventChannel: EventChannel.EventSink? = null
 
-    private var READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A or
+    private var nfcFlags = NfcAdapter.FLAG_READER_NFC_A or
             NfcAdapter.FLAG_READER_NFC_B or
             NfcAdapter.FLAG_READER_NFC_BARCODE or
             NfcAdapter.FLAG_READER_NFC_F or
@@ -47,7 +47,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
 
     companion object {
         @JvmStatic
-        fun registerWith(registrar: Registrar): Unit {
+        fun registerWith(registrar: Registrar) {
             val messenger = registrar.messenger()
             val channel = MethodChannel(messenger, "flutter_nfc_reader")
             val eventChannel = EventChannel(messenger, "it.matteocrippa.flutternfcreader.flutter_nfc_reader")
@@ -58,21 +58,21 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
     init {
-        nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
-        nfcAdapter = nfcManager?.defaultAdapter
+        if(activity != null) {
+            nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
+            nfcAdapter = nfcManager?.defaultAdapter
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.requestPermissions(
-                    arrayOf(Manifest.permission.NFC),
-                    PERMISSION_NFC
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity.requestPermissions(
+                        arrayOf(Manifest.permission.NFC),
+                        PERMISSION_NFC
+                )
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                nfcAdapter?.enableReaderMode(activity, this, nfcFlags, null)
+            }
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            nfcAdapter?.enableReaderMode(activity, this, READER_FLAGS, null)
-        }
-
-
     }
 
     private fun writeMessageToTag(nfcMessage: NdefMessage, tag: Tag?): Boolean {
@@ -133,9 +133,9 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
     }
 
 
-    override fun onMethodCall(call: MethodCall, result: Result): Unit {
+    override fun onMethodCall(call: MethodCall, result: Result) {
 
-        if (nfcAdapter?.isEnabled != true) {
+        if (nfcAdapter?.isEnabled != true && call.method != "NfcAvailable") {
             result.error("404", "NFC Hardware not found", null)
             return
         }
@@ -158,7 +158,13 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
                     writeTag()
                 }
             }
-
+            "NfcAvailable" -> {
+                when {
+                    nfcAdapter == null -> result.success("not_supported")
+                    nfcAdapter!!.isEnabled -> result.success("available")
+                    else -> result.success("disabled")
+                }
+            }
             else -> {
                 result.notImplemented()
             }
@@ -167,11 +173,11 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
 
     // EventChannel.StreamHandler methods
     override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
-        eventChannel = events;
+        eventChannel = events
     }
 
     override fun onCancel(arguments: Any?) {
-        eventChannel =  null;
+        eventChannel =  null
     }
 
 
@@ -227,7 +233,7 @@ class FlutterNfcReaderPlugin(val registrar: Registrar) : MethodCallHandler, Even
             val data = mapOf(kId to id, kContent to message, kError to "", kStatus to "reading")
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
-                eventChannel?.success(data);
+                eventChannel?.success(data)
             }
         }
     }

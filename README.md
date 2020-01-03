@@ -61,12 +61,12 @@ Add those two lines to your `AndroidManifest.xml` on the top
         android:required="true" />
 ```
 
-Assign 18 in minSdkVersion in the  `build.gradle (Module: app)`
+Assign 19 in minSdkVersion in the  `build.gradle (Module: app)`
 
 ```gradle
 defaultConfig {
 ...
-minSdkVersion 18
+minSdkVersion 19
 ...
 }
 ```
@@ -89,6 +89,9 @@ use_frameworks!
 
 This function will return a promise when a read occurs, till that very moment the reading session is open.
 The promise will return a `NfcData` model, this model contains:
+
+`FlutterNfcReader.read()` and `FlutterNfcReader.onTagDiscovered()` have an optional parameter, only for **iOS**, called `instruction`.
+You can pass a _String_ that contains information to be shown in the modal screen.
 
 - id > id of the tag
 - content > content of the tag
@@ -147,6 +150,10 @@ FlutterNfcReader.stop().then((response) {
 ```
 
 For better details look at the demo app.
+
+### Check NFC Availability
+In order to check whether the Device supports NFC or not you can call `FlutterNfcReader.checkNFCAvailability()`.
+The method returns `NFCAvailability.available` when NFC is supported and enabled, `NFCAvailability.disabled` when NFC is disabled (Android only) and `NFCAvailability.not_supported` when the user's hardware does not support NFC.
 
 ### IOS Specifics
 
