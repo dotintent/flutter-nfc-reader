@@ -74,7 +74,6 @@ class FlutterNfcReader {
 
   static Stream<NfcData> onTagDiscovered({String instruction}) {
     if (Platform.isIOS) {
-      print("HI");
       _callRead(instruction: instruction);
     }
     return stream.receiveBroadcastStream().map((rawNfcData) {
