@@ -59,6 +59,20 @@ class FlutterNfcReader {
   static const stream =
       const EventChannel('it.matteocrippa.flutternfcreader.flutter_nfc_reader');
 
+  static Future<NfcData> enableReaderMode() async {
+    final Map data = await _channel.invokeMethod('NfcEnableReaderMode');
+    final NfcData result = NfcData.fromMap(data);
+
+    return result;
+  }
+
+  static Future<NfcData> disableReaderMode() async {
+    final Map data = await _channel.invokeMethod('NfcDisableReaderMode');
+    final NfcData result = NfcData.fromMap(data);
+
+    return result;
+  }
+
   static Future<NfcData> stop() async {
     final Map data = await _channel.invokeMethod('NfcStop');
     final NfcData result = NfcData.fromMap(data);
@@ -84,8 +98,8 @@ class FlutterNfcReader {
   static Future<Map> _callRead({instruction: String}) async {
       return await _channel.invokeMethod('NfcRead', <String, dynamic> {
         "instruction": instruction
-      }); 
-  } 
+      });
+  }
 
   static Future<NfcData> write(String path, String label) async {
     final Map data = await _channel.invokeMethod(
