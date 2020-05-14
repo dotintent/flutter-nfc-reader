@@ -58,7 +58,7 @@ class FlutterNfcReaderPlugin(registrar: Registrar) : MethodCallHandler, EventCha
     }
 
     init {
-        if(activity != null) {
+        if (activity != null) {
             nfcManager = activity.getSystemService(Context.NFC_SERVICE) as? NfcManager
             nfcAdapter = nfcManager?.defaultAdapter
 
@@ -69,9 +69,7 @@ class FlutterNfcReaderPlugin(registrar: Registrar) : MethodCallHandler, EventCha
                 )
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                nfcAdapter?.enableReaderMode(activity, this, nfcFlags, null)
-            }
+            startNFCReader()
         }
     }
 
@@ -135,6 +133,12 @@ class FlutterNfcReaderPlugin(registrar: Registrar) : MethodCallHandler, EventCha
 
     override fun onMethodCall(call: MethodCall, result: Result) {
 
+        if (call.method == "NfcEnableReaderMode") {
+            startNFCReader()
+        } else if (call.method == "NfcDisableReaderMode") {
+            stopNFCReader()
+        }
+
         if (nfcAdapter?.isEnabled != true && call.method != "NfcAvailable") {
             result.error("404", "NFC Hardware not found", null)
             return
@@ -177,11 +181,18 @@ class FlutterNfcReaderPlugin(registrar: Registrar) : MethodCallHandler, EventCha
     }
 
     override fun onCancel(arguments: Any?) {
-        eventChannel =  null
+        eventChannel = null
     }
 
 
-    private fun stopNFC() {
+    private fun startNFCReader() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            nfcAdapter?.enableReaderMode(activity, this, nfcFlags, null)
+        }
+    }
+
+
+    private fun stopNFCReader() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             nfcAdapter?.disableReaderMode(activity)
         }
