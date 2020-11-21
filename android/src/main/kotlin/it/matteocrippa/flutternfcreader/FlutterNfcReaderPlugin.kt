@@ -18,7 +18,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import java.util.concurrent.CopyOnWriteArrayList
 
-const val PERMISSION_NFC = 1007
+const val PERMISSION_NFC: Int = 1007
 
 @RequiresApi(Build.VERSION_CODES.M)
 class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, EventChannel.StreamHandler, NfcAdapter.ReaderCallback {
@@ -39,17 +39,19 @@ class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, 
 
     override fun onMethodCall(call: MethodCall, result: Result) {
         require(activity != null) { "Plugin not ready yet" }
-        require(nfcAdapter != null) { "Plugin not ready yet" }
-        if (nfcAdapter?.isEnabled != true && call.method != "NfcAvailable") {
-            result.error("404", "NFC Hardware not found", null)
-            return
+        val nfcAdapter by lazy {
+            (nfcAdapter ?: error("Plugin not ready yet")).apply {
+                if (!isEnabled) {
+                    result.error("404", "NFC Hardware not found", null)
+                }
+            }
         }
 
         when (call.method) {
             "NfcEnableReaderMode" ->
-                nfcAdapter!!.startNFCReader()
+                nfcAdapter.startNFCReader()
             "NfcDisableReaderMode" ->
-                nfcAdapter!!.stopNFCReader()
+                nfcAdapter.stopNFCReader()
             "NfcStop" -> {
                 listeners.removeAll { it !is NfcScanner }
                 result.success(null)
@@ -64,8 +66,8 @@ class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, 
             }
             "NfcAvailable" -> {
                 when {
-                    nfcAdapter == null -> result.success("not_supported")
-                    nfcAdapter!!.isEnabled -> result.success("available")
+                    this.nfcAdapter == null -> result.success("not_supported")
+                    nfcAdapter.isEnabled -> result.success("available")
                     else -> result.success("disabled")
                 }
             }
@@ -94,8 +96,9 @@ class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, 
     }
 
     // handle discovered NDEF Tags
-    override fun onTagDiscovered(tag: Tag) = listeners.forEach { it.onTagDiscovered(tag) }
+    override fun onTagDiscovered(tag: Tag): Unit = listeners.forEach { it.onTagDiscovered(tag) }
 
+    @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         val messenger = binding.binaryMessenger
         methodChannel = MethodChannel(messenger, "flutter_nfc_reader")
@@ -104,6 +107,7 @@ class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, 
         eventChannel!!.setStreamHandler(this)
     }
 
+    @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         methodChannel!!.setMethodCallHandler(null)
         eventChannel!!.setStreamHandler(null)
@@ -124,9 +128,9 @@ class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, 
         nfcAdapter?.startNFCReader()
     }
 
-    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) = onAttachedToActivity(binding)
+    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding): Unit = onAttachedToActivity(binding)
 
-    override fun onDetachedFromActivityForConfigChanges() = onDetachedFromActivity()
+    override fun onDetachedFromActivityForConfigChanges(): Unit = onDetachedFromActivity()
 
     override fun onDetachedFromActivity() {
         activity = null
