@@ -40,11 +40,10 @@ class FlutterNfcReaderPlugin : FlutterPlugin, ActivityAware, MethodCallHandler, 
     override fun onMethodCall(call: MethodCall, result: Result) {
         require(activity != null) { "Plugin not ready yet" }
         val nfcAdapter by lazy {
-            (nfcAdapter ?: error("Plugin not ready yet")).apply {
-                if (!isEnabled) {
-                    result.error("404", "NFC Hardware not found", null)
-                }
+            if (nfcAdapter == null) {
+                result.error("404", "NFC Hardware not found", null)
             }
+            nfcAdapter ?: error("NFC hardware not found")
         }
 
         when (call.method) {
