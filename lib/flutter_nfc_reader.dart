@@ -12,12 +12,12 @@ enum NFCStatus {
 }
 
 class NfcData {
-  final String id;
-  final String content;
-  final String error;
-  final String statusMapper;
+  final String? id;
+  final String? content;
+  final String? error;
+  final String? statusMapper;
 
-  NFCStatus status;
+  NFCStatus status = NFCStatus.none;
 
   NfcData({
     this.id,
@@ -75,13 +75,13 @@ class FlutterNfcReader {
 
   static Future<void> stop() => _channel.invokeMethod('NfcStop');
 
-  static Future<NfcData> read({String instruction}) async {
+  static Future<NfcData> read({String? instruction}) async {
     final Map data = await _callRead(instruction: instruction);
     final NfcData result = NfcData.fromMap(data);
     return result;
   }
 
-  static Stream<NfcData> onTagDiscovered({String instruction}) {
+  static Stream<NfcData> onTagDiscovered({String? instruction}) {
     if (Platform.isIOS) {
       _callRead(instruction: instruction);
     }
@@ -91,9 +91,8 @@ class FlutterNfcReader {
   }
 
   static Future<Map> _callRead({instruction: String}) async {
-      return await _channel.invokeMethod('NfcRead', <String, dynamic> {
-        "instruction": instruction
-      });
+    return await _channel
+        .invokeMethod('NfcRead', <String, dynamic>{"instruction": instruction});
   }
 
   static Future<NfcData> write(String path, String label) async {
@@ -104,12 +103,13 @@ class FlutterNfcReader {
 
     return result;
   }
+
   static Future<NFCAvailability> checkNFCAvailability() async {
-    var availability = "NFCAvailability.${await _channel.invokeMethod<String>("NfcAvailable")}";
-    return NFCAvailability.values.firstWhere((item) => item.toString() == availability);
+    var availability =
+        "NFCAvailability.${await _channel.invokeMethod<String>("NfcAvailable")}";
+    return NFCAvailability.values
+        .firstWhere((item) => item.toString() == availability);
   }
 }
 
-enum NFCAvailability {
-  available, disabled, not_supported
-}
+enum NFCAvailability { available, disabled, not_supported }

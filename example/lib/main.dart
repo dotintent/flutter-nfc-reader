@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
 }
 
 class NfcScan extends StatefulWidget {
-  NfcScan({Key key}) : super(key: key);
+  NfcScan({Key? key}) : super(key: key);
 
   @override
   _NfcScanState createState() => _NfcScanState();
