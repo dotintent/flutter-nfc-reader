@@ -100,6 +100,10 @@ private fun ByteArray.bytesToHexString(): String? {
 private fun Tag.read(callback: (Map<*, *>) -> Unit) {
     // convert tag to NDEF tag
     val ndef = Ndef.get(this)
+    if (ndef == null) {
+        callback(mapOf(kId to null, kContent to null, kError to "failed to get NDEF", kStatus to "error"))
+        return
+    }
     ndef.connect()
     val ndefMessage = ndef.ndefMessage ?: ndef.cachedNdefMessage
     val message = ndefMessage.toByteArray()
