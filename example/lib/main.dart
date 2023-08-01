@@ -53,13 +53,13 @@ class _NfcScanState extends State<NfcScan> {
         TextField(
           controller: writerController,
         ),
-        RaisedButton(
+        ElevatedButton(
           onPressed: () {
             FlutterNfcReader.read(instruction: "It's reading");
           },
           child: Text("Read"),
         ),
-        RaisedButton(
+        ElevatedButton(
           onPressed: () {
             FlutterNfcReader.write(" ", writerController.text).then((value) {
               print(value.content);
