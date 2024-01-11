@@ -1,7 +1,7 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\tools\flutter"
-export "FLUTTER_APPLICATION_PATH=c:\working\flutter\flutter-nfc-reader\example"
+export "FLUTTER_ROOT=C:\Users\Farioso\Documents\devtools\flutter"
+export "FLUTTER_APPLICATION_PATH=D:\Documents\Projects\flutter-nfc-reader-Adding-dart-3-support-\example"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib\main.dart"
 export "FLUTTER_BUILD_DIR=build"
