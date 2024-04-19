@@ -11,9 +11,8 @@ You can also trigger the stop event manually using a dedicated function.
 
 | Platform | Supported NFC Tags               |
 | -------- | -------------------------------- |
-| Android  | **NDEF:**  A, B, F, V, BARCODE   |
+| Android  | **NDEF:** A, B, F, V, BARCODE    |
 | iOS      | **NDEF:** NFC TYPE 1, 2, 3, 4, 5 |
-
 
 ## Only Android supports nfc tag writing
 
@@ -23,7 +22,7 @@ Add to pubspec.yaml:
 
 ```yaml
 dependencies:
-  flutter_nfc_reader: ^0.1.0
+  flutter_nfc_reader: ^0.1.2
 ```
 
 or to get the experimental one:
@@ -36,7 +35,7 @@ dependencies:
       ref: develop
 ```
 
-and then run the shell
+and then run in the shell
 
 ```shell
 flutter packages get
@@ -61,7 +60,7 @@ Add those two lines to your `AndroidManifest.xml` on the top
         android:required="true" />
 ```
 
-Assign 19 in minSdkVersion in the  `build.gradle (Module: app)`
+Assign 19 in minSdkVersion in the `build.gradle (Module: app)`
 
 ```gradle
 defaultConfig {
@@ -152,6 +151,7 @@ FlutterNfcReader.stop().then((response) {
 For better details look at the demo app.
 
 ### Check NFC Availability
+
 In order to check whether the Device supports NFC or not you can call `FlutterNfcReader.checkNFCAvailability()`.
 The method returns `NFCAvailability.available` when NFC is supported and enabled, `NFCAvailability.disabled` when NFC is disabled (Android only) and `NFCAvailability.not_supported` when the user's hardware does not support NFC.
 
@@ -160,7 +160,7 @@ The method returns `NFCAvailability.available` when NFC is supported and enabled
 IOS behaves a bit different in terms of NFC Scanning and writing.
 
 - Ids of the tags aren't possible in the current implementation
-- each scan is visible for the user with a bottom sheet 
+- each scan is visible for the user with a bottom sheet
 
 ## Getting Started
 

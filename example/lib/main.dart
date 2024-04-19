@@ -19,8 +19,6 @@ class MyApp extends StatelessWidget {
 }
 
 class NfcScan extends StatefulWidget {
-  NfcScan({Key key}) : super(key: key);
-
   @override
   _NfcScanState createState() => _NfcScanState();
 }
@@ -53,13 +51,13 @@ class _NfcScanState extends State<NfcScan> {
         TextField(
           controller: writerController,
         ),
-        RaisedButton(
+        TextButton(
           onPressed: () {
             FlutterNfcReader.read(instruction: "It's reading");
           },
           child: Text("Read"),
         ),
-        RaisedButton(
+        TextButton(
           onPressed: () {
             FlutterNfcReader.write(" ", writerController.text).then((value) {
               print(value.content);
